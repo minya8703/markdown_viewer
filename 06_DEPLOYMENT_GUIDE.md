@@ -326,39 +326,265 @@ pg_dump -U markdown_user markdown_viewer > db_backup.sql
 - DNS 레코드 업데이트
 - 점진적 트래픽 전환
 
-### 3. Kubernetes 배포 (선택적)
+### 3. Kubernetes 배포 (권장 - 확장성 및 운영 경험)
+
+#### 3.1 Kubernetes 클러스터 구성
+
+**필요한 컴포넌트:**
+- Kubernetes 1.24+ (GKE, EKS, AKS 또는 온프레미스)
+- Ingress Controller (Nginx)
+- PersistentVolume (파일 스토리지)
+- ConfigMap & Secrets (설정 관리)
+
+#### 3.2 애플리케이션 배포
 
 **deployment.yaml:**
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: markdown-viewer
+  name: markdown-viewer-api
+  labels:
+    app: markdown-viewer
+    component: api
 spec:
   replicas: 3
   selector:
     matchLabels:
       app: markdown-viewer
+      component: api
   template:
     metadata:
       labels:
         app: markdown-viewer
+        component: api
     spec:
       containers:
       - name: app
         image: your-registry/markdown-viewer:latest
         ports:
         - containerPort: 8080
+          name: http
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "production"
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: redis.host
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: db.password
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: markdown-viewer-api
+spec:
+  selector:
+    app: markdown-viewer
+    component: api
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: ClusterIP
+```
+
+#### 3.3 오토스케일링 설정
+
+**hpa.yaml:**
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: markdown-viewer-api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: markdown-viewer-api
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 2
+        periodSeconds: 15
+      selectPolicy: Max
+```
+
+#### 3.4 Ingress 설정
+
+**ingress.yaml:**
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: markdown-viewer-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - markdown-viewer.example.com
+    secretName: markdown-viewer-tls
+  rules:
+  - host: markdown-viewer.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: markdown-viewer-api
+            port:
+              number: 80
+```
+
+#### 3.5 Redis 클러스터 배포
+
+**redis-statefulset.yaml:**
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-cluster
+spec:
+  serviceName: redis
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
         volumeMounts:
         - name: data
           mountPath: /data
-      volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: markdown-viewer-data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+```
+
+#### 3.6 MQ/Kafka 배포
+
+**RabbitMQ 배포 (옵션 1):**
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+spec:
+  serviceName: rabbitmq
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management-alpine
+        ports:
+        - containerPort: 5672
+          name: amqp
+        - containerPort: 15672
+          name: management
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "admin"
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-secrets
+              key: password
+```
+
+**Kafka 배포 (옵션 2):**
+```yaml
+# Kafka는 보통 Operator를 사용하거나 Helm Chart 활용
+# 예: Strimzi Operator 또는 Confluent Operator
+```
+
+#### 3.7 모니터링 설정
+
+**Prometheus ServiceMonitor:**
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: markdown-viewer-metrics
+spec:
+  selector:
+    matchLabels:
+      app: markdown-viewer
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 30s
 ```
 
 ---

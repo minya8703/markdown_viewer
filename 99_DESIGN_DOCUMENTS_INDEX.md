@@ -40,6 +40,16 @@
 - **내용**: NAS 배포 절차, 클라우드 전환 가이드, 운영 가이드
 - **상태**: ✅ 완료
 
+### 07. Kubernetes 배포 가이드
+- **파일**: `07_KUBERNETES_DEPLOYMENT.md`
+- **내용**: Kubernetes 클러스터 구성, 배포, 오토스케일링, 모니터링
+- **상태**: ✅ 완료
+
+### 08. MQ/Kafka 가이드
+- **파일**: `08_MQ_KAFKA_GUIDE.md`
+- **내용**: RabbitMQ/Kafka 비동기 처리, 이벤트 스트리밍, 모니터링
+- **상태**: ✅ 완료
+
 ## 문서 작성 순서
 
 1. ✅ 01. 시스템 아키텍처 (완료)
@@ -59,7 +69,9 @@
             ├── 03. 03_API_SPECIFICATION.md (기반)
             ├── 04. 04_DATABASE_DESIGN.md (기반)
             ├── 05. 05_UI_UX_DESIGN.md (기반)
-            └── 06. 06_DEPLOYMENT_GUIDE.md (기반)
+            ├── 06. 06_DEPLOYMENT_GUIDE.md (기반)
+            ├── 07. 07_KUBERNETES_DEPLOYMENT.md (기반)
+            └── 08. 08_MQ_KAFKA_GUIDE.md (기반)
 ```
 
 ### 문서 번호 체계
@@ -70,6 +82,8 @@
 - **04**: 데이터베이스 설계서 (`04_DATABASE_DESIGN.md`)
 - **05**: UI/UX 설계서 (`05_UI_UX_DESIGN.md`)
 - **06**: 배포 가이드 (`06_DEPLOYMENT_GUIDE.md`)
+- **07**: Kubernetes 배포 가이드 (`07_KUBERNETES_DEPLOYMENT.md`)
+- **08**: MQ/Kafka 가이드 (`08_MQ_KAFKA_GUIDE.md`)
 
 ## 참고 사항
 

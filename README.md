@@ -6,6 +6,19 @@ Google 로그인 기반의 안전하고 사용하기 편한 마크다운 뷰어 
 
 마크다운 뷰어 V2는 개인 파일의 프라이버시를 보호하면서도 직관적이고 편안한 사용자 경험을 제공하는 웹 기반 마크다운 뷰어 및 에디터입니다.
 
+### 프로젝트 목적
+
+이 프로젝트는 **실무에서 요구되는 핵심 기술 스택을 경험**하기 위한 학습 프로젝트입니다:
+
+- 🎯 **수요 있는 프로젝트**: 실제 사용자에게 가치를 제공하는 서비스
+- 🚀 **Kubernetes**: 컨테이너 오케스트레이션 및 마이크로서비스 배포 경험
+- 📨 **비동기 처리**: MQ (RabbitMQ) 또는 Kafka를 활용한 스트림 처리 및 이벤트 기반 아키텍처
+- 💾 **캐싱 전략**: 다양한 캐싱 레이어 (L1/L2 캐시, 분산 캐시, CDN) 설계 및 구현
+- 📊 **대용량 트래픽 대응**: 로드 밸런싱, 오토스케일링, 데이터베이스 샤딩, 성능 최적화
+- 📈 **모니터링 및 관찰성**: 메트릭, 로깅, 트레이싱을 통한 시스템 가시성 확보
+
+**기본적이면서도 다양한 기술을 경험할 수 있는 실전 프로젝트입니다.**
+
 ### 주요 기능
 
 - ✅ **Google OAuth 로그인**: 별도의 회원가입 없이 빠른 인증
@@ -32,6 +45,15 @@ Google 로그인 기반의 안전하고 사용하기 편한 마크다운 뷰어 
 - **인증**: Spring Security, JWT
 - **데이터베이스**: SQLite (초기) / PostgreSQL (확장)
 - **마크다운 처리**: Flexmark-java, CommonMark
+- **메시지 큐**: RabbitMQ 또는 Kafka
+- **캐싱**: Redis Cluster, Caffeine
+- **모니터링**: Prometheus, Grafana, ELK Stack
+
+### 인프라
+- **컨테이너**: Docker
+- **오케스트레이션**: Kubernetes
+- **로드 밸런싱**: Nginx Ingress Controller
+- **스토리지**: Object Storage (S3 호환) 또는 NFS
 
 ## 프로젝트 구조
 
@@ -54,6 +76,8 @@ markdown_viewer_v2/
 ├── 04_DATABASE_DESIGN.md        # 데이터베이스 설계서
 ├── 05_UI_UX_DESIGN.md           # UI/UX 설계서
 ├── 06_DEPLOYMENT_GUIDE.md       # 배포 가이드
+├── 07_KUBERNETES_DEPLOYMENT.md  # Kubernetes 배포 가이드
+├── 08_MQ_KAFKA_GUIDE.md         # MQ/Kafka 비동기 처리 가이드
 └── 99_DESIGN_DOCUMENTS_INDEX.md # 설계 문서 인덱스
 ```
 
@@ -94,6 +118,8 @@ npm run build
 - [데이터베이스 설계서](./04_DATABASE_DESIGN.md)
 - [UI/UX 설계서](./05_UI_UX_DESIGN.md)
 - [배포 가이드](./06_DEPLOYMENT_GUIDE.md)
+- [Kubernetes 배포 가이드](./07_KUBERNETES_DEPLOYMENT.md)
+- [MQ/Kafka 가이드](./08_MQ_KAFKA_GUIDE.md)
 - [설계 문서 인덱스](./99_DESIGN_DOCUMENTS_INDEX.md)
 
 ## 라이선스
