@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: markdown-viewer-backend
+  
+  datasource:
+    url: jdbc:mariadb://localhost:3306/markdown_viewer?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:adgjadgj11}
+    driver-class-name: org.mariadb.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MariaDBDialect
+  
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - openid
+              - email
+              - profile
+            redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/api/auth/google/callback}
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: sub
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+jwt:
+  secret: ${JWT_SECRET:your-secret-key-change-this-in-production-min-256-bits}
+  expiration: 86400000 # 24 hours in milliseconds
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}

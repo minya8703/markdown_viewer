@@ -70,11 +70,19 @@ APP_NAME=Markdown Viewer
 APP_ENV=production
 APP_PORT=8080
 
-# 데이터베이스 설정
-DB_TYPE=sqlite
-DB_PATH=/data/markdown_viewer.db
+# 데이터베이스 설정 (MariaDB 권장)
+DB_TYPE=mariadb
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=markdown_viewer
+DB_USER=markdown_user
+DB_PASSWORD=secure_password
 
-# 또는 PostgreSQL
+# 또는 SQLite (개발/테스트용)
+# DB_TYPE=sqlite
+# DB_PATH=/data/markdown_viewer.db
+
+# 또는 PostgreSQL (대안 - 고급 기능 필요 시)
 # DB_TYPE=postgresql
 # DB_HOST=localhost
 # DB_PORT=5432

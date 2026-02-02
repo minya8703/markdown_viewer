@@ -160,7 +160,7 @@
       ▼             ▼             ▼              ▼
 ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌──────────────┐
 │  Auth DB  │ │  User DB  │ │  File DB  │ │  (Stateless)│
-│ (Postgres)│ │ (Postgres)│ │ (Postgres)│ │             │
+│ (MariaDB) │ │ (MariaDB) │ │ (MariaDB) │ │             │
 └───────────┘ └───────────┘ └───────────┘ └──────────────┘
       │             │             │              │
       │             │             │              │
@@ -198,7 +198,7 @@
 - JWT (jjwt)
 
 **데이터베이스:**
-- PostgreSQL (인증 토큰, 세션 정보)
+- MariaDB (인증 토큰, 세션 정보)
 
 **API 엔드포인트:**
 ```
@@ -219,10 +219,10 @@ POST   /api/auth/refresh
 **기술 스택:**
 - Spring Boot
 - Spring Data JPA
-- PostgreSQL
+- MariaDB
 
 **데이터베이스:**
-- PostgreSQL (users, user_preferences 테이블)
+- MariaDB (users, user_preferences 테이블)
 
 **API 엔드포인트:**
 ```
@@ -245,7 +245,7 @@ GET    /api/users/me/storage
 - File System / Object Storage
 
 **데이터베이스:**
-- PostgreSQL (file_metadata 테이블)
+- MariaDB (file_metadata 테이블)
 
 **API 엔드포인트:**
 ```
@@ -373,9 +373,9 @@ public class UserServiceClient {
 **각 서비스별 독립 데이터베이스:**
 
 ```
-Auth Service    → auth_db (PostgreSQL)
-User Service    → user_db (PostgreSQL)
-File Service    → file_db (PostgreSQL)
+Auth Service    → auth_db (MariaDB)
+User Service    → user_db (MariaDB)
+File Service    → file_db (MariaDB)
 Markdown Service → (Stateless, DB 불필요)
 ```
 
@@ -730,12 +730,16 @@ services:
     ports:
       - "8084:8084"
   
-  postgres:
-    image: postgres:15
+  mariadb:
+    image: mariadb:10.11
     environment:
-      POSTGRES_DB: auth_db
+      MYSQL_DATABASE: auth_db
+      MYSQL_USER: auth_user
+      MYSQL_PASSWORD: ${AUTH_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
     ports:
-      - "5432:5432"
+      - "3306:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
   
   rabbitmq:
     image: rabbitmq:3-management

@@ -1,9 +1,13 @@
 /**
  * API 클라이언트
  * 백엔드 API와 통신하는 공유 모듈
+ * 
+ * @see 01_SYSTEM_ARCHITECTURE.md - 프론트엔드-백엔드 통신 구조
+ * @see 03_API_SPECIFICATION.md - API 엔드포인트 명세, 인증 방식 (JWT)
+ * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared 레이어), API 클라이언트 패턴
  */
 
-import type { ApiResponse, User, FileMetadata, FileContent } from '../types';
+import type { ApiResponse, FileMetadata } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
@@ -41,9 +45,9 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const token = TokenManager.getToken();
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...(options.headers as Record<string, string> || {}),
     };
 
     if (token) {
@@ -55,6 +59,23 @@ class ApiClient {
         ...options,
         headers,
       });
+
+      // 401 Unauthorized 처리: 토큰 만료 또는 인증 실패
+      if (response.status === 401) {
+        TokenManager.removeToken();
+        localStorage.removeItem('user');
+        
+        // 로그인 페이지로 리다이렉트 (현재 경로가 로그인 페이지가 아닐 때만)
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+        
+        const error = await response.json().catch(() => ({
+          code: 'UNAUTHORIZED',
+          message: '인증이 만료되었습니다. 다시 로그인해주세요.',
+        }));
+        throw error;
+      }
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({
@@ -105,7 +126,7 @@ class ApiClient {
       formData.append('path', path);
     }
 
-    const headers: HeadersInit = {};
+    const headers: Record<string, string> = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }

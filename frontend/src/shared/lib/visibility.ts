@@ -1,6 +1,9 @@
 /**
  * Page Visibility API 관리
  * 백그라운드 업데이트 방지 기능
+ * 
+ * @see 02_REQUIREMENTS.md - FR-5.3 (백그라운드 업데이트 방지)
+ * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/lib 레이어)
  */
 
 export class PageVisibilityManager {

@@ -1,0 +1,242 @@
+.encryption-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn var(--transition-base);
+}
+
+.encryption-dialog__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.encryption-dialog__container {
+  position: relative;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.encryption-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.encryption-dialog__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.encryption-dialog__title i {
+  color: var(--status-info);
+}
+
+.encryption-dialog__close-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.encryption-dialog__close-btn:hover {
+  background: var(--bg-hover);
+}
+
+.encryption-dialog__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+.encryption-dialog__info {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.encryption-dialog__warning {
+  font-size: var(--font-size-sm);
+  color: var(--status-warning);
+  margin: 0 0 var(--spacing-lg) 0;
+  padding: var(--spacing-sm);
+  background: rgba(255, 152, 0, 0.1);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.encryption-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.encryption-dialog__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.encryption-dialog__label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+}
+
+.encryption-dialog__input {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  transition: all var(--transition-fast);
+}
+
+.encryption-dialog__input:focus {
+  outline: none;
+  border-color: var(--status-info);
+}
+
+.encryption-dialog__checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--status-info);
+}
+
+.encryption-dialog__strength {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius);
+}
+
+.encryption-dialog__strength--weak {
+  color: var(--status-error);
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.encryption-dialog__strength--medium {
+  color: var(--status-warning);
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.encryption-dialog__strength--strong {
+  color: var(--status-success);
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.encryption-dialog__error {
+  font-size: var(--font-size-xs);
+  color: var(--status-error);
+  display: none;
+}
+
+.encryption-dialog__hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.encryption-dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+.encryption-dialog__cancel-btn,
+.encryption-dialog__confirm-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.encryption-dialog__cancel-btn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.encryption-dialog__cancel-btn:hover {
+  background: var(--bg-hover);
+}
+
+.encryption-dialog__confirm-btn {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+}
+
+.encryption-dialog__confirm-btn:hover:not(:disabled) {
+  background: var(--text-secondary);
+}
+
+.encryption-dialog__confirm-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  .encryption-dialog__container {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .encryption-dialog__header,
+  .encryption-dialog__content,
+  .encryption-dialog__footer {
+    padding: var(--spacing-md);
+  }
+}

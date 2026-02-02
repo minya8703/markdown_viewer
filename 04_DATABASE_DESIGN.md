@@ -36,31 +36,34 @@
 
 ## 데이터베이스 선택
 
-### 최종 추천: PostgreSQL (권장)
+### 최종 선택: MariaDB
 
 **이유:**
-- ✅ **MSA 친화적**: Database per Service 패턴에 최적
-- ✅ **확장성**: 읽기 복제본, 샤딩 지원
-- ✅ **기능 풍부**: JSON 타입, Full-Text Search, 확장 기능
+- ✅ **오픈소스**: 완전한 오픈소스 (MySQL과 달리 Oracle 소유 아님)
+- ✅ **간단한 설정**: 초기 설정이 쉬움, 빠른 프로토타이핑
+- ✅ **안정성**: MySQL과 호환되며 검증된 안정성
+- ✅ **성능**: 읽기 중심 워크로드에 최적화
+- ✅ **MSA 지원**: Database per Service 패턴 적용 가능
 - ✅ **Kubernetes 지원**: StatefulSet 배포 용이
 - ✅ **학습 가치**: 실무에서 널리 사용되는 오픈소스 DB
 - ✅ **Spring Boot 통합**: Spring Data JPA 완벽 지원
 
 ### 단계별 선택
 
-#### 초기 단계: PostgreSQL (개발 환경)
+#### 초기 단계: MariaDB 10.11 (개발 환경)
 - **이유**: 프로덕션과 동일한 환경으로 개발
 - **구성**: Docker Compose로 로컬 구성
 - **용도**: 개발 및 테스트
 
-#### 확장 단계: PostgreSQL (프로덕션)
+#### 확장 단계: MariaDB 10.11 (프로덕션)
 - **이유**: MSA 환경에서 각 서비스별 독립 DB
 - **구성**: Kubernetes StatefulSet
 - **용도**: 프로덕션 배포 (1000명 이상)
+- **고가용성**: Master-Slave 복제 (읽기 전용 복제본)
 
-#### 대안: MySQL/MariaDB
-- **이유**: 간단한 설정, 빠른 프로토타이핑
-- **용도**: 초기 개발 또는 MySQL 경험이 있는 경우
+#### 대안: PostgreSQL
+- **이유**: 고급 기능 필요 시 (JSON 타입, Full-Text Search 등)
+- **용도**: 복잡한 쿼리 및 분석이 필요한 경우
 
 **자세한 내용은 [RDBMS 선택 가이드](./11_RDBMS_RECOMMENDATION.md) 참고**
 
@@ -277,16 +280,17 @@ ON file_metadata(user_id, encrypted);
 
 ## 마이그레이션 전략
 
-### 초기 마이그레이션 (SQLite → PostgreSQL)
+### 초기 마이그레이션 (SQLite → MariaDB)
 
 #### 1. 데이터베이스 생성
 ```sql
--- PostgreSQL 데이터베이스 생성
-CREATE DATABASE markdown_viewer;
+-- MariaDB 데이터베이스 생성
+CREATE DATABASE markdown_viewer CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 사용자 생성
-CREATE USER markdown_user WITH PASSWORD 'secure_password';
-GRANT ALL PRIVILEGES ON DATABASE markdown_viewer TO markdown_user;
+CREATE USER 'markdown_user'@'%' IDENTIFIED BY 'secure_password';
+GRANT ALL PRIVILEGES ON markdown_viewer.* TO 'markdown_user'@'%';
+FLUSH PRIVILEGES;
 ```
 
 #### 2. 테이블 생성
@@ -302,8 +306,8 @@ GRANT ALL PRIVILEGES ON DATABASE markdown_viewer TO markdown_user;
 # SQLite에서 데이터 추출
 sqlite3 markdown_viewer.db .dump > dump.sql
 
-# PostgreSQL로 데이터 임포트 (수정 필요)
-psql -U markdown_user -d markdown_viewer < dump.sql
+# MariaDB로 데이터 임포트 (스키마 수정 필요)
+mysql -u markdown_user -p markdown_viewer < dump.sql
 ```
 
 ---
@@ -406,7 +410,7 @@ psql -U markdown_user -d markdown_viewer < users_backup.sql
 - **전송 중**: HTTPS (TLS 1.2+)
 - **저장 중**: 
   - 파일 내용: 클라이언트 사이드 암호화 (AES-256-GCM)
-  - 데이터베이스: PostgreSQL 암호화 (선택적)
+  - 데이터베이스: MariaDB 암호화 (선택적, InnoDB 암호화 또는 파일 시스템 암호화)
 
 ### 접근 제어
 - 데이터베이스 사용자 권한 분리

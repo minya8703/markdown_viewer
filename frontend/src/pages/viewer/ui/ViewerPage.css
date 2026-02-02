@@ -1,0 +1,62 @@
+.viewer-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--header-height);
+}
+
+.viewer-page__main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.viewer-page__content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-left: 0;
+  transition: margin-left var(--transition-base);
+}
+
+.viewer-page__main:has(.sidebar:not(.sidebar--hidden)) .viewer-page__content-wrapper {
+  margin-left: var(--sidebar-width);
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .viewer-page__main:has(.sidebar:not(.sidebar--hidden)) .viewer-page__content-wrapper {
+    margin-left: var(--sidebar-width-tablet);
+  }
+}
+
+.viewer-page__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.viewer-page__renderer {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.viewer-page__editor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  .viewer-page__content-wrapper {
+    margin-left: 0 !important;
+  }
+
+  .viewer-page__content {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}

@@ -1,5 +1,10 @@
 /**
  * 공유 타입 정의
+ * 애플리케이션 전역에서 사용되는 TypeScript 타입 및 인터페이스
+ * 
+ * @see 03_API_SPECIFICATION.md - API 응답 구조, 데이터 모델
+ * @see 04_DATABASE_DESIGN.md - 데이터베이스 엔티티 구조
+ * @see 12_CODING_CONVENTIONS.md - TypeScript 타입 정의 규약
  */
 
 // API 응답 기본 구조
@@ -65,11 +70,13 @@ export interface SidebarState {
 export interface AutoSaveConfig {
   enabled: boolean;
   interval: number; // 초 단위
+  minChanges?: number; // 즉시 저장 최소 변경 횟수
 }
 
 // 암호화 설정
 export interface EncryptionConfig {
   enabled: boolean;
+  algorithm?: string; // 암호화 알고리즘 (예: 'AES-256-GCM')
   password?: string;
 }
 
@@ -77,4 +84,11 @@ export interface EncryptionConfig {
 export interface LocalFileMode {
   enabled: boolean;
   fileHandle?: FileSystemFileHandle;
+}
+
+// 인증 응답
+export interface AuthResponse {
+  token: string;
+  user: User;
+  redirectUrl?: string;
 }

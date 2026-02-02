@@ -1,0 +1,34 @@
+.footer {
+  width: 100%;
+  min-height: 100px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.footer__adsense {
+  width: 100%;
+  max-width: 1200px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer__placeholder {
+  color: var(--text-disabled);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+  .footer {
+    min-height: 80px;
+    padding: var(--spacing-sm);
+  }
+}

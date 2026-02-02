@@ -1,0 +1,73 @@
+.header {
+  height: var(--header-height);
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-md);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: var(--z-header);
+  box-shadow: var(--shadow-sm);
+}
+
+.header__filename {
+  flex: 1;
+  margin: 0 var(--spacing-md);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header__filename-text {
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.header__save-status {
+  font-size: var(--font-size-xs);
+  padding: 0 var(--spacing-sm);
+  white-space: nowrap;
+}
+
+.header__save-status--saved {
+  color: var(--text-secondary);
+}
+
+.header__save-status--saving {
+  color: var(--status-info);
+}
+
+.header__save-status--failed {
+  color: var(--status-error);
+}
+
+.header__save-status--unsaved {
+  color: var(--status-warning);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .header__filename {
+    margin: 0 var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+
+  .header__save-status {
+    display: none; /* 모바일에서는 저장 상태 숨김 */
+  }
+}

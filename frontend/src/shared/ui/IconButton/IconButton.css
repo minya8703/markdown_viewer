@@ -1,0 +1,77 @@
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  background-color: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  padding: 0;
+}
+
+.icon-btn:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.icon-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.icon-btn:disabled,
+.icon-btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.icon-btn--active {
+  background-color: var(--bg-hover);
+  color: var(--status-info);
+}
+
+/* 크기 변형 */
+.icon-btn--sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-sm);
+}
+
+.icon-btn--md {
+  width: 40px;
+  height: 40px;
+  font-size: var(--font-size-md);
+}
+
+.icon-btn--lg {
+  width: 48px;
+  height: 48px;
+  font-size: var(--font-size-lg);
+}
+
+/* 변형 스타일 */
+.icon-btn--primary {
+  color: var(--status-info);
+}
+
+.icon-btn--primary:hover:not(:disabled) {
+  background-color: var(--status-info);
+  color: var(--bg-primary);
+}
+
+.icon-btn--danger {
+  color: var(--status-error);
+}
+
+.icon-btn--danger:hover:not(:disabled) {
+  background-color: var(--status-error);
+  color: var(--bg-primary);
+}
+
+/* 아이콘 스타일 */
+.icon-btn i {
+  font-size: inherit;
+}

@@ -1,5 +1,9 @@
 /**
  * 로딩 인디케이터 컴포넌트
+ * 비동기 작업 중 로딩 상태 표시
+ * 
+ * @see 05_UI_UX_DESIGN.md - UI 피드백 (로딩 인디케이터)
+ * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/ui 레이어)
  */
 
 export class Loading {

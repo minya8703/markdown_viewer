@@ -134,7 +134,7 @@ data:
         host: redis-service
         port: 6379
       datasource:
-        url: jdbc:postgresql://postgres-service:5432/markdown_viewer
+        url: jdbc:mariadb://mariadb-service:3306/markdown_viewer?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     cache:
       type: redis
       ttl: 3600

@@ -44,7 +44,7 @@ Google 로그인 기반의 안전하고 사용하기 편한 마크다운 뷰어 
 ### 백엔드 (예정)
 - **프레임워크**: Spring Boot 3.x
 - **인증**: Spring Security, JWT
-- **데이터베이스**: SQLite (초기) / PostgreSQL (확장)
+- **데이터베이스**: MariaDB 10.11 (권장) / PostgreSQL (대안)
 - **마크다운 처리**: Flexmark-java, CommonMark
 - **메시지 큐**: RabbitMQ 또는 Kafka
 - **캐싱**: Redis Cluster, Caffeine
@@ -80,6 +80,9 @@ markdown_viewer_v2/
 ├── 07_KUBERNETES_DEPLOYMENT.md  # Kubernetes 배포 가이드
 ├── 08_MQ_KAFKA_GUIDE.md         # MQ/Kafka 비동기 처리 가이드
 ├── 09_SPRING_MONITORING.md      # Spring 모니터링 가이드
+├── 10_MSA_ARCHITECTURE.md       # MSA 아키텍처 가이드
+├── 11_RDBMS_RECOMMENDATION.md   # RDBMS 선택 가이드
+├── 12_CODING_CONVENTIONS.md     # 코딩 규약 및 스타일 가이드
 └── 99_DESIGN_DOCUMENTS_INDEX.md # 설계 문서 인덱스
 ```
 
@@ -110,6 +113,8 @@ npm run build
 5. **개발자 경험**: 읽기 좋은 깔끔한 코드
 6. **크로스 브라우징**: 다양한 브라우저 및 OS 환경 지원
 
+> 💡 **코딩 규약**: 프로젝트의 코딩 스타일과 규칙은 [코딩 규약 및 스타일 가이드](./12_CODING_CONVENTIONS.md)를 참고하세요.
+
 ## 문서
 
 자세한 설계 문서는 다음을 참고하세요:
@@ -123,6 +128,9 @@ npm run build
 - [Kubernetes 배포 가이드](./07_KUBERNETES_DEPLOYMENT.md)
 - [MQ/Kafka 가이드](./08_MQ_KAFKA_GUIDE.md)
 - [Spring 모니터링 가이드](./09_SPRING_MONITORING.md)
+- [MSA 아키텍처 가이드](./10_MSA_ARCHITECTURE.md)
+- [RDBMS 선택 가이드](./11_RDBMS_RECOMMENDATION.md)
+- [코딩 규약 및 스타일 가이드](./12_CODING_CONVENTIONS.md)
 - [설계 문서 인덱스](./99_DESIGN_DOCUMENTS_INDEX.md)
 
 ## 라이선스

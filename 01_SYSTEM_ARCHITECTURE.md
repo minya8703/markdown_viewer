@@ -411,6 +411,7 @@
 │  │  │  - Markdown Service                            │ │ │
 │  │  │  - Cache Service                               │ │ │
 │  │  │  - Message Queue Service (MQ/Kafka)          │ │ │
+│  │  │  - Database Service (MariaDB)                │ │ │
 │  │  └────────────────────────────────────────────────┘ │ │
 │  │                                                      │ │
 │  │  ┌────────────────────────────────────────────────┐ │ │
@@ -497,7 +498,7 @@
        ▼                 ▼                 ▼
 ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
 │  Auth DB     │  │  User DB    │  │  File DB     │
-│ (PostgreSQL) │  │ (PostgreSQL)│  │ (PostgreSQL) │
+│ (MariaDB)    │  │ (MariaDB)   │  │ (MariaDB)    │
 └──────────────┘  └──────────────┘  └──────────────┘
        │                 │                 │
        └─────────────────┴─────────────────┘
@@ -703,7 +704,7 @@ Spring Boot Application
     │   └── Session Configuration
     ├── NASConfig
     ├── RedisConfig
-    ├── DatabaseConfig (SQLite/PostgreSQL)
+    ├── DatabaseConfig (MariaDB/PostgreSQL)
     └── AdSenseConfig
 ```
 
@@ -1483,8 +1484,8 @@ Spring Boot Application
 │ - Redis (for scaling)               │
 │                                     │
 │ Database:                           │
-│ - SQLite (초기, 단일 사용자)        │
-│ - PostgreSQL (확장 시)              │
+│ - MariaDB 10.11 (권장)              │
+│ - PostgreSQL (대안)                   │
 │ - Spring Data JPA                   │
 │                                     │
 │ Build Tool:                         │

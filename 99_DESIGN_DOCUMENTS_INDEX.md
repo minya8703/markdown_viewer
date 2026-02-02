@@ -62,7 +62,17 @@
 
 ### 11. RDBMS 선택 가이드
 - **파일**: `11_RDBMS_RECOMMENDATION.md`
-- **내용**: 프로젝트 특성에 맞는 RDBMS 선택 및 구성 가이드 (PostgreSQL 권장)
+- **내용**: 프로젝트 특성에 맞는 RDBMS 선택 및 구성 가이드 (MariaDB 권장)
+- **상태**: ✅ 완료
+
+### 12. 코딩 규약 및 스타일 가이드
+- **파일**: `12_CODING_CONVENTIONS.md`
+- **내용**: TypeScript 코딩 규약, FSD 아키텍처 규칙, 네이밍 컨벤션, 코드 스타일, 커밋 메시지 규칙
+- **상태**: ✅ 완료
+
+### 13. 백엔드 환경 설정 가이드
+- **파일**: `13_BACKEND_ENVIRONMENT_SETUP.md`
+- **내용**: Google OAuth2 설정, 데이터베이스 설정, 환경 변수 설정, JWT Secret 생성, 문제 해결
 - **상태**: ✅ 완료
 
 ## 문서 작성 순서
@@ -78,6 +88,8 @@
 9. ✅ 09. Spring 모니터링 가이드 (완료)
 10. ✅ 10. MSA 아키텍처 가이드 (완료)
 11. ✅ 11. RDBMS 선택 가이드 (완료)
+12. ✅ 12. 코딩 규약 및 스타일 가이드 (완료)
+13. ✅ 13. 백엔드 환경 설정 가이드 (완료)
 
 ## 문서 간 의존성
 
@@ -94,7 +106,9 @@
             ├── 08. 08_MQ_KAFKA_GUIDE.md (기반)
             ├── 09. 09_SPRING_MONITORING.md (기반)
             ├── 10. 10_MSA_ARCHITECTURE.md (기반)
-            └── 11. 11_RDBMS_RECOMMENDATION.md (기반)
+            ├── 11. 11_RDBMS_RECOMMENDATION.md (기반)
+            ├── 12. 12_CODING_CONVENTIONS.md (기반)
+            └── 13. 13_BACKEND_ENVIRONMENT_SETUP.md (기반)
 ```
 
 ### 문서 번호 체계
@@ -110,6 +124,8 @@
 - **09**: Spring 모니터링 가이드 (`09_SPRING_MONITORING.md`)
 - **10**: MSA 아키텍처 가이드 (`10_MSA_ARCHITECTURE.md`)
 - **11**: RDBMS 선택 가이드 (`11_RDBMS_RECOMMENDATION.md`)
+- **12**: 코딩 규약 및 스타일 가이드 (`12_CODING_CONVENTIONS.md`)
+- **13**: 백엔드 환경 설정 가이드 (`13_BACKEND_ENVIRONMENT_SETUP.md`)
 
 ## 참고 사항
 
