@@ -11,6 +11,7 @@ Google 로그인 기반의 안전하고 사용하기 편한 마크다운 뷰어 
 이 프로젝트는 **실무에서 요구되는 핵심 기술 스택을 경험**하기 위한 학습 프로젝트입니다:
 
 - 🎯 **수요 있는 프로젝트**: 실제 사용자에게 가치를 제공하는 서비스
+- 🏗️ **MSA**: 작은 프로젝트에서도 MSA 패턴 적용 및 경험
 - 🚀 **Kubernetes**: 컨테이너 오케스트레이션 및 마이크로서비스 배포 경험
 - 📨 **비동기 처리**: MQ (RabbitMQ) 또는 Kafka를 활용한 스트림 처리 및 이벤트 기반 아키텍처
 - 💾 **캐싱 전략**: 다양한 캐싱 레이어 (L1/L2 캐시, 분산 캐시, CDN) 설계 및 구현
@@ -78,6 +79,7 @@ markdown_viewer_v2/
 ├── 06_DEPLOYMENT_GUIDE.md       # 배포 가이드
 ├── 07_KUBERNETES_DEPLOYMENT.md  # Kubernetes 배포 가이드
 ├── 08_MQ_KAFKA_GUIDE.md         # MQ/Kafka 비동기 처리 가이드
+├── 09_SPRING_MONITORING.md      # Spring 모니터링 가이드
 └── 99_DESIGN_DOCUMENTS_INDEX.md # 설계 문서 인덱스
 ```
 
@@ -120,6 +122,7 @@ npm run build
 - [배포 가이드](./06_DEPLOYMENT_GUIDE.md)
 - [Kubernetes 배포 가이드](./07_KUBERNETES_DEPLOYMENT.md)
 - [MQ/Kafka 가이드](./08_MQ_KAFKA_GUIDE.md)
+- [Spring 모니터링 가이드](./09_SPRING_MONITORING.md)
 - [설계 문서 인덱스](./99_DESIGN_DOCUMENTS_INDEX.md)
 
 ## 라이선스

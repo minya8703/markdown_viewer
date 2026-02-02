@@ -668,29 +668,80 @@ docker system prune -a
 
 ## 모니터링
 
-### 1. 애플리케이션 모니터링
+### 1. Spring Boot Actuator 설정
 
-#### Spring Boot Actuator
+**application.yml:**
 ```yaml
-# application.yml
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus,env,loggers
+      base-path: /actuator
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      environment: ${spring.profiles.active}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.9, 0.95, 0.99
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+    diskspace:
+      enabled: true
+    db:
+      enabled: true
+    redis:
+      enabled: true
 ```
 
-#### 주요 메트릭
-- 응답 시간
-- 처리량
-- 에러율
-- 메모리 사용량
-- CPU 사용량
+### 2. Prometheus 연동
 
-### 2. 로그 모니터링
+**의존성 추가:**
+```xml
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-registry-prometheus</artifactId>
+</dependency>
+```
+
+**메트릭 확인:**
+```bash
+curl http://localhost:8080/actuator/prometheus
+```
+
+### 3. 주요 메트릭
+
+#### 애플리케이션 메트릭
+- `http.server.requests`: HTTP 요청 수 및 응답 시간
+- `file.operations`: 파일 작업 수 (read/write/delete)
+- `markdown.render.duration`: 마크다운 렌더링 시간
+- `file.save.duration`: 파일 저장 시간
+
+#### 인프라 메트릭
+- `jvm.memory.used`: JVM 메모리 사용량
+- `jvm.gc.pause`: GC 일시정지 시간
+- `process.cpu.usage`: CPU 사용률
+- `process.uptime`: 애플리케이션 가동 시간
+
+### 4. 로그 모니터링
 
 #### 로그 레벨 설정
 ```yaml
@@ -702,15 +753,24 @@ logging:
     path: /app/logs
     max-size: 10MB
     max-history: 30
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 ```
 
-### 3. 알림 설정
+#### 구조화된 로깅 (JSON)
+프로덕션 환경에서는 JSON 형식으로 로그 출력하여 ELK Stack으로 수집
+
+### 5. 알림 설정
 
 #### 주요 알림 항목
-- 서비스 다운
+- 서비스 다운 (Health Check 실패)
 - 디스크 사용량 80% 초과
 - 메모리 사용량 90% 초과
-- 에러율 증가
+- 에러율 5% 초과
+- 응답 시간 p95가 2초 초과
+
+**자세한 내용은 [Spring 모니터링 가이드](./09_SPRING_MONITORING.md) 참고**
 
 ---
 

@@ -50,6 +50,21 @@
 - **내용**: RabbitMQ/Kafka 비동기 처리, 이벤트 스트리밍, 모니터링
 - **상태**: ✅ 완료
 
+### 09. Spring 모니터링 가이드
+- **파일**: `09_SPRING_MONITORING.md`
+- **내용**: Spring Boot Actuator, Micrometer, Prometheus, Custom Metrics, Distributed Tracing, Grafana
+- **상태**: ✅ 완료
+
+### 10. MSA 아키텍처 가이드
+- **파일**: `10_MSA_ARCHITECTURE.md`
+- **내용**: 작은 프로젝트에서 MSA 적용 전략, 서비스 분리, API Gateway, 서비스 간 통신
+- **상태**: ✅ 완료
+
+### 11. RDBMS 선택 가이드
+- **파일**: `11_RDBMS_RECOMMENDATION.md`
+- **내용**: 프로젝트 특성에 맞는 RDBMS 선택 및 구성 가이드 (PostgreSQL 권장)
+- **상태**: ✅ 완료
+
 ## 문서 작성 순서
 
 1. ✅ 01. 시스템 아키텍처 (완료)
@@ -58,6 +73,11 @@
 4. ✅ 04. 데이터베이스 설계서 (완료)
 5. ✅ 05. UI/UX 설계서 (완료)
 6. ✅ 06. 배포 가이드 (완료)
+7. ✅ 07. Kubernetes 배포 가이드 (완료)
+8. ✅ 08. MQ/Kafka 가이드 (완료)
+9. ✅ 09. Spring 모니터링 가이드 (완료)
+10. ✅ 10. MSA 아키텍처 가이드 (완료)
+11. ✅ 11. RDBMS 선택 가이드 (완료)
 
 ## 문서 간 의존성
 
@@ -71,7 +91,10 @@
             ├── 05. 05_UI_UX_DESIGN.md (기반)
             ├── 06. 06_DEPLOYMENT_GUIDE.md (기반)
             ├── 07. 07_KUBERNETES_DEPLOYMENT.md (기반)
-            └── 08. 08_MQ_KAFKA_GUIDE.md (기반)
+            ├── 08. 08_MQ_KAFKA_GUIDE.md (기반)
+            ├── 09. 09_SPRING_MONITORING.md (기반)
+            ├── 10. 10_MSA_ARCHITECTURE.md (기반)
+            └── 11. 11_RDBMS_RECOMMENDATION.md (기반)
 ```
 
 ### 문서 번호 체계
@@ -84,6 +107,9 @@
 - **06**: 배포 가이드 (`06_DEPLOYMENT_GUIDE.md`)
 - **07**: Kubernetes 배포 가이드 (`07_KUBERNETES_DEPLOYMENT.md`)
 - **08**: MQ/Kafka 가이드 (`08_MQ_KAFKA_GUIDE.md`)
+- **09**: Spring 모니터링 가이드 (`09_SPRING_MONITORING.md`)
+- **10**: MSA 아키텍처 가이드 (`10_MSA_ARCHITECTURE.md`)
+- **11**: RDBMS 선택 가이드 (`11_RDBMS_RECOMMENDATION.md`)
 
 ## 참고 사항
 
