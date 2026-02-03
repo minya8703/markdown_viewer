@@ -9,14 +9,12 @@
  */
 
 import { Button } from '@shared/ui/Button';
-import type { AuthResponse } from '@shared/types';
-import { saveAuthData } from '@features/auth';
-import { apiClient } from '@shared/api/client';
+import { getCurrentUser, saveToken } from '@features/auth';
+import { TokenManager } from '@shared/api/client';
 import './LoginPage.css';
 
 export class LoginPage {
   private element: HTMLElement;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private onLoginSuccess?: () => void;
 
   constructor(onLoginSuccess?: () => void) {
@@ -45,6 +43,20 @@ export class LoginPage {
       subtitle.textContent = 'Google 계정으로 로그인하여 시작하세요';
       container.appendChild(subtitle);
 
+      // URL에 error가 있으면 안내 메시지 표시
+      const urlError = new URLSearchParams(window.location.search).get('error');
+      if (urlError) {
+        const errorEl = document.createElement('p');
+        errorEl.className = 'login-page__error';
+        errorEl.setAttribute('role', 'alert');
+        const messages: Record<string, string> = {
+          authentication_failed: 'Google 로그인에 실패했습니다. 다시 시도해주세요.',
+          callback_failed: '인증 처리 중 오류가 발생했습니다. 다시 로그인해주세요.',
+        };
+        errorEl.textContent = messages[urlError] || `오류: ${urlError}`;
+        container.appendChild(errorEl);
+      }
+
       // Google 로그인 버튼
       console.log('Creating Button component...');
       try {
@@ -68,6 +80,16 @@ export class LoginPage {
         container.appendChild(fallbackButton);
       }
 
+      // 로그인 없이 뷰어 시작 버튼
+      const viewerButton = new Button({
+        label: '로그인 없이 뷰어 시작',
+        variant: 'secondary',
+        size: 'lg',
+        onClick: () => this.handleStartWithoutLogin(),
+        ariaLabel: '로그인 없이 뷰어 사용',
+      });
+      container.appendChild(viewerButton.getElement());
+
       // 정보 텍스트
       const info = document.createElement('p');
       info.className = 'login-page__info';
@@ -85,46 +107,50 @@ export class LoginPage {
   }
 
   private handleGoogleLogin(): void {
-    // Spring Security OAuth2의 기본 엔드포인트 사용
-    // /oauth2/authorization/{registrationId} 형식
-    const backendUrl = import.meta.env.VITE_API_BASE_URL || '/api';
-    window.location.href = `${backendUrl}/oauth2/authorization/google`;
+    // 백엔드 context-path /api → /api/oauth2/authorization/google
+    const apiBase = import.meta.env.VITE_API_BASE_URL || '/api';
+    const origin = apiBase.startsWith('http') ? apiBase.replace(/\/api\/?$/, '') : window.location.origin;
+    const path = apiBase.includes('/api') ? '/api' : '';
+    window.location.href = `${origin}${path}/oauth2/authorization/google`;
+  }
+
+  private handleStartWithoutLogin(): void {
+    // 뷰어 페이지로 이동 (SPA 라우팅을 위해 onLoginSuccess와 동일하게 처리하려면 콜백 사용)
+    if (this.onLoginSuccess) {
+      this.onLoginSuccess();
+    } else {
+      window.location.href = '/viewer';
+    }
   }
 
 
-  // OAuth 콜백 처리 (URL에서 호출)
+  /**
+   * OAuth 콜백 처리 (백엔드가 ?token=xxx 로 리다이렉트한 경우)
+   * 토큰 저장 → /auth/me 로 사용자 조회 → /viewer 리다이렉트
+   */
   static async handleCallback(): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    const state = urlParams.get('state');
+    const token = urlParams.get('token');
+    const error = urlParams.get('error');
 
-    if (!code) {
-      throw new Error('Authorization code not found');
+    if (error) {
+      console.error('OAuth error:', error);
+      window.location.href = `/login?error=${encodeURIComponent(error)}`;
+      return;
+    }
+
+    if (!token) {
+      throw new Error('토큰이 없습니다. 로그인을 다시 시도해주세요.');
     }
 
     try {
-      // 백엔드에 인증 코드 전송하여 토큰 받기
-      const response = await apiClient.post<AuthResponse>('/auth/google/callback', {
-        code,
-        state,
-      });
-
-      if (response.success && response.data?.token) {
-        // 토큰과 사용자 정보 저장
-        saveAuthData(
-          response.data.token,
-          response.data.user
-        );
-
-        // 메인 페이지로 리다이렉트
-        window.location.href = '/viewer';
-      } else {
-        throw new Error('Failed to authenticate');
-      }
-    } catch (error) {
-      console.error('Callback error:', error);
-      alert('인증 처리 중 오류가 발생했습니다.');
-      window.location.href = '/login';
+      saveToken(token);
+      await getCurrentUser();
+      window.location.href = '/viewer';
+    } catch (err) {
+      console.error('Callback error:', err);
+      TokenManager.removeToken();
+      window.location.href = '/login?error=callback_failed';
     }
   }
 

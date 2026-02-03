@@ -85,23 +85,21 @@ public class AuthController {
      */
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<AuthResponse.UserDto>> getCurrentUser(
-            @RequestHeader("Authorization") String authorizationHeader
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
         try {
-            // JWT 토큰 추출
-            String token = authorizationHeader.replace("Bearer ", "");
-            
-            // 사용자 ID 추출
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(ApiResponse.error("AUTH_REQUIRED", "인증이 필요합니다."));
+            }
+            String token = authorizationHeader.replace("Bearer ", "").trim();
             Long userId = authService.getUserIdFromToken(token);
-            
-            // 사용자 정보 조회 (간단한 예시, 실제로는 UserService 사용)
-            // TODO: UserService 구현 후 수정 필요
-            
-            return ResponseEntity.ok(ApiResponse.success(null));
+            User user = authService.findById(userId);
+            return ResponseEntity.ok(ApiResponse.success(AuthResponse.UserDto.from(user)));
         } catch (Exception e) {
             log.error("사용자 정보 조회 실패", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error("UNAUTHORIZED", "인증이 필요합니다."));
+                    .body(ApiResponse.error("AUTH_INVALID", "인증이 필요합니다."));
         }
     }
 

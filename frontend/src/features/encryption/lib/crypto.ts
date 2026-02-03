@@ -104,7 +104,7 @@ export class FileEncryption {
       const decrypted = await crypto.subtle.decrypt(
         {
           name: 'AES-GCM',
-          iv: iv,
+          iv: iv as BufferSource,
         },
         key,
         combined
@@ -138,7 +138,7 @@ export class FileEncryption {
     return await crypto.subtle.deriveKey(
       {
         name: 'PBKDF2',
-        salt: salt,
+        salt: salt as BufferSource,
         iterations: iterations || this.defaultIterations,
         hash: 'SHA-256',
       },
@@ -173,7 +173,8 @@ export class FileEncryption {
     const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
     let binary = '';
     for (let i = 0; i < bytes.length; i++) {
-      binary += String.fromCharCode(bytes[i]);
+      const byte = bytes[i];
+      if (byte !== undefined) binary += String.fromCharCode(byte);
     }
     return btoa(binary);
   }

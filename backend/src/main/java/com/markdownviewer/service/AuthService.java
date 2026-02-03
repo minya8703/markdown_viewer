@@ -1,80 +1,73 @@
 package com.markdownviewer.service;
 
+import com.markdownviewer.config.JwtProperties;
 import com.markdownviewer.entity.User;
 import com.markdownviewer.repository.UserRepository;
-import com.markdownviewer.util.JwtUtil;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Date;
 
-/**
- * 인증 서비스
- * Google OAuth 인증 처리 및 사용자 관리
- * 
- * @see 01_SYSTEM_ARCHITECTURE.md - AuthService 상세 설계
- * @see 12_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (Service)
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService extends DefaultOAuth2UserService {
+public class AuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final JwtProperties jwtProperties;
 
-    /**
-     * OAuth2 사용자 정보 로드 및 사용자 생성/업데이트
-     */
     @Override
-    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauth2User = super.loadUser(userRequest);
-        
-        // Google 사용자 정보 추출
-        Map<String, Object> attributes = oauth2User.getAttributes();
-        String googleSub = (String) attributes.get("sub");
-        String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
-        String pictureUrl = (String) attributes.get("picture");
-
-        // 사용자 생성 또는 업데이트
-        User user = createOrUpdateUser(googleSub, email, name, pictureUrl);
-
-        return oauth2User;
+        // Google에서 사용자 정보를 가져오는 기본 로직 위임
+        DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+        return delegate.loadUser(userRequest);
     }
 
     /**
-     * 사용자 생성 또는 업데이트
+     * 사용자 생성 또는 업데이트 (회원가입/로그인 로직)
      */
     @Transactional
     public User createOrUpdateUser(String googleSub, String email, String name, String pictureUrl) {
-        User user = userRepository.findByGoogleSub(googleSub)
+        return userRepository.findByGoogleSub(googleSub)
+                .map(user -> {
+                    // 1. 이미 존재하는 사용자 -> 정보 업데이트 (로그인)
+                    log.info("기존 사용자 로그인: {}", email);
+                    user.update(name, pictureUrl);
+                    return user;
+                })
                 .orElseGet(() -> {
-                    // 새 사용자 생성
+                    // 2. 존재하지 않는 사용자 -> 새로 생성 (회원가입)
+                    log.info("새로운 사용자 회원가입: {}", email);
                     User newUser = User.builder()
                             .googleSub(googleSub)
                             .email(email)
                             .name(name)
                             .pictureUrl(pictureUrl)
+                            .lastLoginAt(LocalDateTime.now())
                             .build();
-                    log.info("새 사용자 생성: {}", email);
                     return userRepository.save(newUser);
                 });
+    }
 
-        // 기존 사용자 정보 업데이트
-        user.updateFromGoogle(name, pictureUrl);
-        user.updateLastLogin();
-        userRepository.save(user);
-
-        return user;
+    /**
+     * 사용자 ID로 조회
+     */
+    @Transactional(readOnly = true)
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
     }
 
     /**
@@ -83,27 +76,32 @@ public class AuthService extends DefaultOAuth2UserService {
     @Transactional(readOnly = true)
     public User findByGoogleSub(String googleSub) {
         return userRepository.findByGoogleSub(googleSub)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + googleSub));
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
     }
 
     /**
-     * 사용자 ID로 JWT 토큰 생성
+     * JWT 토큰 생성
      */
     public String generateToken(Long userId) {
-        return jwtUtil.generateToken(userId);
-    }
+        long now = System.currentTimeMillis();
+        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
 
-    /**
-     * JWT 토큰에서 사용자 ID 추출
-     */
+        return Jwts.builder()
+                .setSubject(String.valueOf(userId))
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + jwtProperties.getExpiration()))
+                .signWith(key)
+                .compact();
+    }
+    
     public Long getUserIdFromToken(String token) {
-        return jwtUtil.getUserIdFromToken(token);
-    }
-
-    /**
-     * JWT 토큰 유효성 검증
-     */
-    public Boolean validateToken(String token) {
-        return jwtUtil.validateToken(token);
+        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
+        String subject = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+        return Long.parseLong(subject);
     }
 }

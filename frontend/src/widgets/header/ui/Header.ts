@@ -16,7 +16,14 @@ export interface HeaderProps {
   isEncryptionEnabled?: boolean; // 암호화 활성화 여부
   onMenuClick?: () => void;
   onEditClick?: () => void;
+  /** 단일 저장 (기본: 일반 저장). 드롭다운 사용 시 onSavePlainClick/onSaveEncryptClick 사용 */
   onSaveClick?: () => void;
+  /** 저장 옵션 드롭다운: 일반 저장 (설계: 저장 버튼 옆 드롭다운) */
+  onSavePlainClick?: () => void;
+  /** 저장 옵션 드롭다운: 암호화하여 저장 */
+  onSaveEncryptClick?: () => void;
+  /** 저장 옵션 드롭다운: 다른 이름으로 저장 (로컬) */
+  onSaveAsClick?: () => void;
   onEncryptionToggle?: () => void; // 암호화 토글
   onSettingsClick?: () => void;
   onUserClick?: () => void;
@@ -27,11 +34,14 @@ export class Header {
   private menuButton!: IconButton; // render()에서 초기화됨
   private editButton: IconButton | null = null; // 편집 모드가 아닐 때만 생성
   private saveButton: IconButton | null = null; // 편집 모드일 때만 생성
+  private saveDropdownWrap: HTMLElement | null = null; // 저장 드롭다운 래퍼
   private encryptionButton: IconButton | null = null; // 편집 모드일 때만 생성
   private settingsButton!: IconButton; // render()에서 초기화됨
   private userButton!: IconButton; // render()에서 초기화됨
   private fileNameElement!: HTMLElement; // render()에서 초기화됨
   private saveStatusElement: HTMLElement | null = null; // 편집 모드일 때만 생성
+  private viewActionsWrap: HTMLElement | null = null; // 뷰 모드 액션 (편집 버튼)
+  private editActionsWrap: HTMLElement | null = null; // 편집 모드 액션 (저장, 암호화, 상태)
 
   constructor(props: HeaderProps) {
     this.element = document.createElement('header');
@@ -48,6 +58,9 @@ export class Header {
       onMenuClick,
       onEditClick,
       onSaveClick,
+      onSavePlainClick,
+      onSaveEncryptClick,
+      onSaveAsClick,
       onEncryptionToggle,
       onSettingsClick,
       onUserClick,
@@ -74,45 +87,100 @@ export class Header {
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'header__actions';
 
-    // 편집 버튼 (편집 모드가 아닐 때만 표시)
-    if (!isEditMode) {
-      this.editButton = new IconButton({
-        icon: 'fas fa-edit',
-        ariaLabel: '편집 모드',
-        onClick: onEditClick,
-      });
-      buttonContainer.appendChild(this.editButton.getElement());
-    } else {
-      this.editButton = null;
-    }
+    // 뷰 모드 액션 래퍼 (편집 버튼) — 동적 모드 전환 시 표시/숨김
+    this.viewActionsWrap = document.createElement('div');
+    this.viewActionsWrap.className = 'header__actions-view';
+    this.editButton = new IconButton({
+      icon: 'fas fa-edit',
+      ariaLabel: '편집 모드',
+      onClick: onEditClick,
+    });
+    this.viewActionsWrap.appendChild(this.editButton.getElement());
+    buttonContainer.appendChild(this.viewActionsWrap);
 
-    // 저장 버튼 (편집 모드에서만 표시)
-    if (isEditMode && onSaveClick) {
+    // 편집 모드 액션 래퍼 (저장, 암호화, 상태) — 동적 모드 전환 시 표시/숨김
+    const hasSaveActions = onSaveClick || onSavePlainClick || onSaveEncryptClick || onSaveAsClick;
+    this.editActionsWrap = document.createElement('div');
+    this.editActionsWrap.className = 'header__actions-edit';
+
+    if (hasSaveActions) {
+      const useDropdown = onSavePlainClick != null && (onSaveEncryptClick != null || onSaveAsClick != null);
+      this.saveDropdownWrap = document.createElement('div');
+      this.saveDropdownWrap.className = 'header__save-dropdown';
+
       this.saveButton = new IconButton({
         icon: 'fas fa-save',
-        ariaLabel: '저장',
-        onClick: onSaveClick,
+        ariaLabel: useDropdown ? '저장 옵션' : '저장',
+        onClick: useDropdown
+          ? () => this.toggleSaveDropdown()
+          : (onSaveClick ?? (() => {})),
         disabled: saveStatus === 'saving',
       });
-      buttonContainer.appendChild(this.saveButton.getElement());
+      this.saveDropdownWrap.appendChild(this.saveButton.getElement());
 
-      // 암호화 토글 버튼 (편집 모드에서만 표시)
-      if (onEncryptionToggle) {
-        this.encryptionButton = new IconButton({
-          icon: isEncryptionEnabled ? 'fas fa-lock' : 'fas fa-unlock',
-          ariaLabel: isEncryptionEnabled ? '암호화 비활성화' : '암호화 활성화',
-          onClick: onEncryptionToggle,
-          active: isEncryptionEnabled,
+      if (useDropdown) {
+        const arrow = document.createElement('button');
+        arrow.type = 'button';
+        arrow.className = 'header__save-dropdown-arrow';
+        arrow.setAttribute('aria-label', '저장 옵션 열기');
+        arrow.innerHTML = '<i class="fas fa-chevron-down"></i>';
+        arrow.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.toggleSaveDropdown();
         });
-        buttonContainer.appendChild(this.encryptionButton.getElement());
+        this.saveDropdownWrap.appendChild(arrow);
+
+        const menu = document.createElement('div');
+        menu.className = 'header__save-dropdown-menu';
+        menu.setAttribute('role', 'menu');
+        menu.innerHTML = `
+          <button type="button" role="menuitem" class="header__save-dropdown-item" data-action="plain" ${saveStatus === 'saving' ? 'disabled' : ''}>
+            <i class="fas fa-save"></i> 일반 저장
+          </button>
+          <button type="button" role="menuitem" class="header__save-dropdown-item" data-action="encrypt" ${saveStatus === 'saving' ? 'disabled' : ''}>
+            <i class="fas fa-lock"></i> 암호화하여 저장
+          </button>
+          ${onSaveAsClick ? '<button type="button" role="menuitem" class="header__save-dropdown-item" data-action="saveas" ' + (saveStatus === 'saving' ? 'disabled' : '') + '><i class="fas fa-file-export"></i> 다른 이름으로 저장</button>' : ''}
+        `;
+        menu.querySelector('[data-action="plain"]')?.addEventListener('click', () => {
+          onSavePlainClick?.();
+          this.closeSaveDropdown();
+        });
+        menu.querySelector('[data-action="encrypt"]')?.addEventListener('click', () => {
+          onSaveEncryptClick?.();
+          this.closeSaveDropdown();
+        });
+        if (onSaveAsClick) {
+          menu.querySelector('[data-action="saveas"]')?.addEventListener('click', () => {
+            onSaveAsClick();
+            this.closeSaveDropdown();
+          });
+        }
+        menu.addEventListener('click', (e) => e.stopPropagation());
+        this.saveDropdownWrap.appendChild(menu);
       }
 
-      // 저장 상태 표시
-      this.saveStatusElement = document.createElement('span');
-      this.saveStatusElement.className = `header__save-status header__save-status--${saveStatus}`;
-      this.updateSaveStatus(saveStatus);
-      buttonContainer.appendChild(this.saveStatusElement);
+      this.editActionsWrap.appendChild(this.saveDropdownWrap);
     }
+
+    if (onEncryptionToggle) {
+      this.encryptionButton = new IconButton({
+        icon: isEncryptionEnabled ? 'fas fa-lock' : 'fas fa-unlock',
+        ariaLabel: isEncryptionEnabled ? '암호화 비활성화' : '암호화 활성화',
+        onClick: onEncryptionToggle,
+        active: isEncryptionEnabled,
+      });
+      this.editActionsWrap.appendChild(this.encryptionButton.getElement());
+    }
+
+    this.saveStatusElement = document.createElement('span');
+    this.saveStatusElement.className = `header__save-status header__save-status--${saveStatus}`;
+    this.updateSaveStatus(saveStatus);
+    this.editActionsWrap.appendChild(this.saveStatusElement);
+
+    buttonContainer.appendChild(this.editActionsWrap);
+
+    this.setEditMode(isEditMode);
 
     // 설정 버튼
     this.settingsButton = new IconButton({
@@ -157,11 +225,13 @@ export class Header {
     }
   }
 
-  setEditMode(_isEditMode: boolean): void {
-    // 편집 모드에 따라 버튼 표시/숨김
-    // 실제 구현에서는 Header 재렌더링 또는 버튼 토글
-    // 현재는 ViewerPage에서 Header를 재생성하는 방식 사용
-    // TODO: 동적 모드 전환 구현 (현재는 재생성 방식 사용)
+  setEditMode(isEditMode: boolean): void {
+    if (this.viewActionsWrap) {
+      this.viewActionsWrap.style.display = isEditMode ? 'none' : 'flex';
+    }
+    if (this.editActionsWrap) {
+      this.editActionsWrap.style.display = isEditMode ? 'flex' : 'none';
+    }
   }
 
   /**
@@ -175,6 +245,24 @@ export class Header {
     }
   }
 
+  private toggleSaveDropdown(): void {
+    this.saveDropdownWrap?.classList.toggle('header__save-dropdown--open');
+    if (this.saveDropdownWrap?.classList.contains('header__save-dropdown--open')) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeSaveDropdownBound);
+      }, 0);
+    } else {
+      document.removeEventListener('click', this.closeSaveDropdownBound);
+    }
+  }
+
+  private closeSaveDropdownBound = (): void => this.closeSaveDropdown();
+
+  private closeSaveDropdown(): void {
+    this.saveDropdownWrap?.classList.remove('header__save-dropdown--open');
+    document.removeEventListener('click', this.closeSaveDropdownBound);
+  }
+
   getElement(): HTMLElement {
     return this.element;
   }
@@ -184,6 +272,7 @@ export class Header {
     if (this.editButton) {
       this.editButton.destroy();
     }
+    this.closeSaveDropdown();
     if (this.saveButton) {
       this.saveButton.destroy();
     }

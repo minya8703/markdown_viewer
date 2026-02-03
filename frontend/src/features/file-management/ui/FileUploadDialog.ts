@@ -21,8 +21,8 @@ export interface FileUploadDialogProps {
 export class FileUploadDialog {
   private element: HTMLElement;
   private overlay: HTMLElement;
-  private fileInput: HTMLInputElement;
-  private dropZone: HTMLElement;
+  private fileInput!: HTMLInputElement;
+  private dropZone!: HTMLElement;
   private onUploadSuccess?: (file: FileMetadata) => void;
   private onCancel?: () => void;
   private targetPath?: string;
@@ -84,9 +84,8 @@ export class FileUploadDialog {
     this.fileInput.className = 'file-upload-dialog__input';
     this.fileInput.addEventListener('change', (e) => {
       const target = e.target as HTMLInputElement;
-      if (target.files && target.files.length > 0) {
-        this.handleFileSelect(target.files[0]);
-      }
+      const file = target.files?.[0];
+      if (file) this.handleFileSelect(file);
     });
 
     this.dropZone.addEventListener('click', () => {
@@ -138,7 +137,7 @@ export class FileUploadDialog {
       const files = e.dataTransfer?.files;
       if (files && files.length > 0) {
         const file = files[0];
-        if (this.isMarkdownFile(file)) {
+        if (file && this.isMarkdownFile(file)) {
           this.handleFileSelect(file);
         } else {
           alert('마크다운 파일만 업로드할 수 있습니다.');

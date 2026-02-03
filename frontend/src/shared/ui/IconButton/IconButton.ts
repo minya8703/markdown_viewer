@@ -43,6 +43,7 @@ export class IconButton {
     this.element.className = `icon-btn icon-btn--${variant} icon-btn--${size}`;
     this.element.disabled = disabled;
     this.element.setAttribute('aria-label', ariaLabel);
+    this.element.setAttribute('title', ariaLabel); // 툴팁 (설계: 아이콘에 툴팁 제공)
     this.element.setAttribute('role', 'button');
 
     if (active) {
@@ -94,6 +95,7 @@ export class IconButton {
 
   setAriaLabel(ariaLabel: string): void {
     this.element.setAttribute('aria-label', ariaLabel);
+    this.element.setAttribute('title', ariaLabel);
   }
 
   destroy(): void {

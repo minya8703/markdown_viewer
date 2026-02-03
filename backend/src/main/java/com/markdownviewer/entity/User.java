@@ -7,22 +7,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * 사용자 엔티티
- * Google OAuth 사용자 정보 저장
- * 
- * @see 04_DATABASE_DESIGN.md - users 테이블 설계
- * @see 12_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (엔티티)
- */
 @Entity
-@Table(name = "users", indexes = {
-    @Index(name = "idx_users_google_sub", columnList = "google_sub"),
-    @Index(name = "idx_users_email", columnList = "email"),
-    @Index(name = "idx_users_last_login", columnList = "last_login_at")
-})
+@Table(name = "users")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class User {
@@ -31,49 +19,51 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "google_sub", unique = true, nullable = false, length = 255)
+    @Column(name = "google_sub", unique = true, nullable = false)
     private String googleSub;
 
-    @Column(name = "email", unique = true, nullable = false, length = 255)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "name", length = 255)
     private String name;
 
-    @Column(name = "picture_url", columnDefinition = "TEXT")
+    @Column(name = "picture_url")
     private String pictureUrl;
 
-    @Column(name = "storage_quota", nullable = false)
     @Builder.Default
-    private Long storageQuota = 1073741824L; // 1GB 기본 할당량
+    @Column(name = "storage_quota")
+    private Long storageQuota = 1073741824L; // 1GB 기본 할당
 
-    @Column(name = "storage_used", nullable = false)
     @Builder.Default
+    @Column(name = "storage_used")
     private Long storageUsed = 0L;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
-    /**
-     * 마지막 로그인 시간 업데이트
-     */
-    public void updateLastLogin() {
+    // 로그인 시 정보 업데이트
+    public void update(String name, String pictureUrl) {
+        this.name = name;
+        this.pictureUrl = pictureUrl;
         this.lastLoginAt = LocalDateTime.now();
     }
 
-    /**
-     * 사용자 정보 업데이트 (Google OAuth 정보)
-     */
-    public void updateFromGoogle(String name, String pictureUrl) {
-        this.name = name;
-        this.pictureUrl = pictureUrl;
+    /** 저장 공간 사용량 증가 (파일 저장 시) */
+    public void addStorageUsed(long delta) {
+        this.storageUsed = (this.storageUsed != null ? this.storageUsed : 0L) + delta;
+    }
+
+    /** 저장 공간 사용량 감소 (파일 삭제 시) */
+    public void subtractStorageUsed(long delta) {
+        long current = this.storageUsed != null ? this.storageUsed : 0L;
+        this.storageUsed = Math.max(0, current - delta);
     }
 }

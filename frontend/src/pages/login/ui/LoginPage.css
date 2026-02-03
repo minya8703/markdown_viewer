@@ -30,6 +30,19 @@
   margin-bottom: var(--spacing-xl);
 }
 
+.login-page__error {
+  font-size: var(--font-size-sm);
+  color: var(--status-error);
+  margin-bottom: var(--spacing-md);
+  padding: var(--spacing-sm);
+  background: rgba(244, 67, 54, 0.08);
+  border-radius: var(--border-radius);
+}
+
+.login-page__container .btn:first-of-type {
+  margin-bottom: var(--spacing-md);
+}
+
 .login-page__info {
   font-size: var(--font-size-xs);
   color: var(--text-disabled);

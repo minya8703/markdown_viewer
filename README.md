@@ -96,7 +96,7 @@ npm install
 npm run dev
 ```
 
-개발 서버는 `http://localhost:3000`에서 실행됩니다.
+개발 서버는 `http://localhost:5173`에서 실행됩니다.
 
 ### 빌드
 
@@ -115,23 +115,29 @@ npm run build
 
 > 💡 **코딩 규약**: 프로젝트의 코딩 스타일과 규칙은 [코딩 규약 및 스타일 가이드](./12_CODING_CONVENTIONS.md)를 참고하세요.
 
+## 자동화
+
+빌드·테스트·실행을 한 번에 처리할 수 있습니다.
+
+| 목적 | Windows | Linux/macOS |
+|------|---------|-------------|
+| **전체 검사** (lint + test) | `.\scripts\check.ps1` | `./scripts/check.sh` |
+| **개발 서버** (백엔드+프론트) | `.\scripts\run-dev.ps1` | `./scripts/run-dev.sh` |
+
+- **CI**: GitHub에 push 시 [GitHub Actions](.github/workflows/ci.yml)가 자동으로 빌드·테스트 실행. Jenkins 사용 시 루트의 `Jenkinsfile` 사용.
+- 상세: [14_AUTOMATION.md](./14_AUTOMATION.md), [15_JENKINS_AND_MONITORING.md](./15_JENKINS_AND_MONITORING.md)
+
 ## 문서
 
-자세한 설계 문서는 다음을 참고하세요:
+**설계·환경·운영 문서는 모두 프로젝트 루트에 있으며**, [설계 문서 인덱스](./99_DESIGN_DOCUMENTS_INDEX.md)에서 한 번에 확인할 수 있습니다.
 
-- [시스템 아키텍처](./01_SYSTEM_ARCHITECTURE.md)
-- [요구사항 명세서](./02_REQUIREMENTS.md)
-- [API 명세서](./03_API_SPECIFICATION.md)
-- [데이터베이스 설계서](./04_DATABASE_DESIGN.md)
-- [UI/UX 설계서](./05_UI_UX_DESIGN.md)
-- [배포 가이드](./06_DEPLOYMENT_GUIDE.md)
-- [Kubernetes 배포 가이드](./07_KUBERNETES_DEPLOYMENT.md)
-- [MQ/Kafka 가이드](./08_MQ_KAFKA_GUIDE.md)
-- [Spring 모니터링 가이드](./09_SPRING_MONITORING.md)
-- [MSA 아키텍처 가이드](./10_MSA_ARCHITECTURE.md)
-- [RDBMS 선택 가이드](./11_RDBMS_RECOMMENDATION.md)
-- [코딩 규약 및 스타일 가이드](./12_CODING_CONVENTIONS.md)
-- [설계 문서 인덱스](./99_DESIGN_DOCUMENTS_INDEX.md)
+| 구분 | 문서 |
+|------|------|
+| **목차** | [99_DESIGN_DOCUMENTS_INDEX.md](./99_DESIGN_DOCUMENTS_INDEX.md) |
+| **설계** | [01 시스템 아키텍처](./01_SYSTEM_ARCHITECTURE.md) · [02 요구사항](./02_REQUIREMENTS.md) · [03 API](./03_API_SPECIFICATION.md) · [04 DB](./04_DATABASE_DESIGN.md) · [05 UI/UX](./05_UI_UX_DESIGN.md) |
+| **배포·인프라** | [06 배포](./06_DEPLOYMENT_GUIDE.md) · [07 Kubernetes](./07_KUBERNETES_DEPLOYMENT.md) · [08 MQ/Kafka](./08_MQ_KAFKA_GUIDE.md) · [09 모니터링](./09_SPRING_MONITORING.md) · [10 MSA](./10_MSA_ARCHITECTURE.md) · [11 RDBMS](./11_RDBMS_RECOMMENDATION.md) |
+| **환경·운영** | [12 코딩 규약](./12_CODING_CONVENTIONS.md) · [13 백엔드 환경](./13_BACKEND_ENVIRONMENT_SETUP.md) · [14 자동화](./14_AUTOMATION.md) · [15 Jenkins·모니터링](./15_JENKINS_AND_MONITORING.md) |
+| **백엔드 전용** | [backend/README.md](./backend/README.md) · [backend/SETUP_GUIDE.md](./backend/SETUP_GUIDE.md) · [backend/DATABASE_SETUP.md](./backend/DATABASE_SETUP.md) · [backend/CHECK_OAUTH_CONFIG.md](./backend/CHECK_OAUTH_CONFIG.md) · [backend/RUN.md](./backend/RUN.md) |
 
 ## 라이선스
 

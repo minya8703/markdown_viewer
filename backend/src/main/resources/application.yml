@@ -28,7 +28,8 @@ spring:
               - openid
               - email
               - profile
-            redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/api/auth/google/callback}
+            # Google Cloud Console에 등록한 리디렉션 URI와 동일하게 (기본: /login/oauth2/code/google)
+            redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/api/login/oauth2/code/google}
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
@@ -47,3 +48,4 @@ jwt:
 
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  file-storage-base-path: ${FILE_STORAGE_BASE_PATH:./data}

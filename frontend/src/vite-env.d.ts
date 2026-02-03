@@ -9,3 +9,10 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/* File System Access API (일부 브라우저) */
+interface Window {
+  showOpenFilePicker?(options?: unknown): Promise<FileSystemFileHandle[]>;
+  showSaveFilePicker?(options?: unknown): Promise<FileSystemFileHandle>;
+  adsbygoogle?: unknown[];
+}

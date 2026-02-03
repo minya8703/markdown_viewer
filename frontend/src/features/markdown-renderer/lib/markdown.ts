@@ -7,12 +7,12 @@
  * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
  */
 
-import { marked } from 'marked';
+import { marked, type MarkedOptions } from 'marked';
 import hljs from 'highlight.js';
 
-// Highlight.js 설정
+// Highlight.js 설정 (highlight는 MarkedExtension 레벨 옵션)
 marked.setOptions({
-  highlight: (code, lang) => {
+  highlight(code: string, lang: string) {
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(code, { language: lang }).value;
@@ -23,8 +23,8 @@ marked.setOptions({
     return hljs.highlightAuto(code).value;
   },
   breaks: true,
-  gfm: true, // GitHub Flavored Markdown
-});
+  gfm: true,
+} as MarkedOptions);
 
 /**
  * 마크다운 텍스트를 HTML로 변환

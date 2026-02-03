@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -39,6 +40,7 @@ import java.util.Map;
 public class SecurityConfig {
 
     private final AuthService authService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Value("${app.frontend-url}")
     private String frontendUrl;
@@ -46,17 +48,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf(csrf -> csrf.disable()) // OAuth2 콜백을 위해 CSRF 비활성화
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT 사용으로 세션 비활성화
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/oauth2/**", "/auth/google/callback").permitAll()
+                .requestMatchers("/oauth2/**", "/login/oauth2/code/**", "/auth/**").permitAll()
                 .requestMatchers("/health").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
+                // 기본 콜백 경로 사용: /login/oauth2/code/google (redirect_uri와 일치해야 함)
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(authService)
                 )
@@ -123,7 +127,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트엔드 URL
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173"
+        )); // 프론트엔드 URL (Vite 기본 5173, CRA 3000)
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

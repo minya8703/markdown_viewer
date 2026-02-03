@@ -6,9 +6,10 @@
  * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
  */
 
-import { Button } from '@shared/ui/Button';
 import { fileEncryption } from '../lib/crypto';
 import './EncryptionDialog.css';
+
+type ElementWithKeydown = HTMLElement & { __keydownHandler?: (e: KeyboardEvent) => void };
 
 export interface EncryptionDialogProps {
   fileName: string;
@@ -168,7 +169,7 @@ export class EncryptionDialog {
       }
     };
     document.addEventListener('keydown', handleKeyDown);
-    (this.element as any).__keydownHandler = handleKeyDown;
+    (this.element as ElementWithKeydown).__keydownHandler = handleKeyDown;
   }
 
   private updatePasswordStrength(): void {
@@ -237,7 +238,7 @@ export class EncryptionDialog {
     const rememberPassword = this.rememberPasswordCheckbox.checked;
 
     // 키보드 이벤트 리스너 제거
-    const handler = (this.element as any).__keydownHandler;
+    const handler = (this.element as ElementWithKeydown).__keydownHandler;
     if (handler) {
       document.removeEventListener('keydown', handler);
     }
@@ -250,7 +251,7 @@ export class EncryptionDialog {
   }
 
   destroy(): void {
-    const handler = (this.element as any).__keydownHandler;
+    const handler = (this.element as ElementWithKeydown).__keydownHandler;
     if (handler) {
       document.removeEventListener('keydown', handler);
     }

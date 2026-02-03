@@ -14,6 +14,22 @@
   overflow-y: auto;
 }
 
+/* 전용 화면 모드: /settings 라우트 */
+.settings-page--full {
+  background: var(--bg-primary);
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.settings-page--full .settings-page__container {
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+  flex: 1;
+}
+
 .settings-page__container {
   background: var(--bg-primary);
   border-radius: var(--border-radius);

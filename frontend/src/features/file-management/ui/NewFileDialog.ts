@@ -21,7 +21,7 @@ export interface NewFileDialogProps {
 export class NewFileDialog {
   private element: HTMLElement;
   private overlay: HTMLElement;
-  private fileNameInput: HTMLInputElement;
+  private fileNameInput!: HTMLInputElement;
   private onFileCreated?: (file: FileMetadata) => void;
   private onCancel?: () => void;
   private defaultPath?: string;

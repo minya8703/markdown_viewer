@@ -8,7 +8,7 @@
  */
 
 import { apiClient, TokenManager } from '@shared/api/client';
-import type { User, ApiResponse } from '@shared/types';
+import type { User } from '@shared/types';
 
 const GOOGLE_LOGIN_URL = '/api/auth/google/login';
 const USER_STORAGE_KEY = 'user';

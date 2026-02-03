@@ -109,10 +109,12 @@ npm run lint
 
 ## 환경 변수
 
-`.env` 파일을 생성하여 다음 변수를 설정할 수 있습니다:
+`.env` 파일을 생성하여 다음 변수를 설정할 수 있습니다. (예시: `.env.example` 참고)
 
 ```env
 VITE_API_BASE_URL=http://localhost:8080/api
+# Google AdSense (푸터 광고 영역 표시)
+VITE_ADSENSE_CLIENT_ID=ca-pub-6630536104334142
 ```
 
 ## 개발 가이드

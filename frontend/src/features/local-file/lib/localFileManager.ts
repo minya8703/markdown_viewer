@@ -37,8 +37,9 @@ export async function openLocalFile(): Promise<LocalFileInfo | null> {
  * File System Access API를 사용한 파일 열기
  */
 async function openFileWithFileSystemAccess(): Promise<LocalFileInfo | null> {
+  if (!window.showOpenFilePicker) return null;
   try {
-    const [fileHandle] = await window.showOpenFilePicker({
+    const handles = await window.showOpenFilePicker({
       types: [
         {
           description: 'Markdown Files',
@@ -51,6 +52,9 @@ async function openFileWithFileSystemAccess(): Promise<LocalFileInfo | null> {
       excludeAcceptAllOption: false,
       multiple: false,
     });
+
+    const fileHandle = handles[0];
+    if (!fileHandle) return null;
 
     const file = await fileHandle.getFile();
     const content = await file.text();
@@ -182,6 +186,7 @@ export async function saveAsLocalFile(
     return saveFileWithDownload(content, defaultFileName);
   }
 
+  if (!window.showSaveFilePicker) return saveFileWithDownload(content, defaultFileName);
   try {
     const fileHandle = await window.showSaveFilePicker({
       suggestedName: defaultFileName,

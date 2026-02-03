@@ -18,13 +18,12 @@ import { AutoSaveManager } from '@features/auto-save';
 import { SettingsPage } from '@pages/settings';
 import { EncryptionDialog } from '@features/encryption/ui/EncryptionDialog';
 import { DecryptionDialog } from '@features/encryption/ui/DecryptionDialog';
-import { fileEncryption } from '@features/encryption';
-import { getCurrentUser, logout } from '@features/auth';
+import { fileEncryption, type EncryptedData } from '@features/encryption';
+import { getCurrentUser } from '@features/auth';
 import {
   openLocalFile,
   saveLocalFile,
   saveAsLocalFile,
-  isFileSystemAccessSupported,
   type LocalFileInfo,
 } from '@features/local-file';
 import { Loading } from '@shared/ui/Loading';
@@ -38,18 +37,23 @@ import {
   getLastDocument,
   saveFile,
 } from '@features/file-management';
-import { apiClient, TokenManager } from '@shared/api/client';
+import { TokenManager } from '@shared/api/client';
+import type { PageVisibilityManager } from '@shared/lib/visibility';
 import type { FileContent, FileMetadata, SaveStatus, User } from '@shared/types';
 import './ViewerPage.css';
 
 export interface ViewerPageProps {
   initialFilePath?: string;
+  /** 설정 버튼 클릭 시 호출 (미제공 시 뷰어 내 오버레이로 설정 표시) */
+  onNavigateToSettings?: () => void;
+  /** 탭 복귀 시 파일 변경 감지 및 알림 (미제공 시 감지 안 함) */
+  visibilityManager?: PageVisibilityManager;
 }
 
 export class ViewerPage {
   private element: HTMLElement;
   private header!: Header;
-  private sidebar!: Sidebar;
+  private sidebar: Sidebar | null = null; /* 사이드바 비사용 시 null */
   private footer!: Footer;
   private markdownRenderer!: MarkdownRenderer;
   private editor: Editor | null = null;
@@ -58,7 +62,6 @@ export class ViewerPage {
   private loading!: Loading;
   private currentFile: FileContent | null = null;
   private isEditMode: boolean = false;
-  private isSidebarOpen: boolean = false;
   private saveStatus: SaveStatus = 'saved';
   private allFiles: FileMetadata[] = []; // 전체 파일 목록 (검색용)
   private searchQuery: string = ''; // 현재 검색어
@@ -67,46 +70,55 @@ export class ViewerPage {
   private currentUser: User | null = null; // 현재 사용자 정보
   private isLocalFileMode: boolean = false; // 로컬 파일 모드 여부
   private localFileInfo: LocalFileInfo | null = null; // 로컬 파일 정보
+  private emptyStateElement!: HTMLElement; // 문서 없을 때 파일 선택 안내
+  private rendererWrapper!: HTMLElement; // 렌더러 감싸는 영역 (빈 상태와 토글)
+  private visibilityManager: PageVisibilityManager | undefined; // 파일 변경 감지 (탭 복귀 시)
 
   constructor(props: ViewerPageProps = {}) {
     this.element = document.createElement('div');
     this.element.className = 'viewer-page';
-    this.render();
+    this.visibilityManager = props.visibilityManager;
+    this.render(props);
     this.init(props);
   }
 
-  private render(): void {
+  private render(props: ViewerPageProps = {}): void {
     // Header
     this.header = new Header({
       fileName: '',
       isEditMode: this.isEditMode,
       saveStatus: this.saveStatus,
       isEncryptionEnabled: this.isEncryptionEnabled,
-      onMenuClick: () => this.toggleSidebar(),
+      onMenuClick: () => this.sidebar?.toggle(),
       onEditClick: () => this.enterEditMode(),
-      onSaveClick: () => this.handleSave(),
+      onSaveClick: () => this.handleSave({ encrypt: false }),
+      onSavePlainClick: () => this.handleSave({ encrypt: false }),
+      onSaveEncryptClick: () => this.handleSave({ encrypt: true }),
+      onSaveAsClick: () => this.handleSaveAsLocalFile(),
       onEncryptionToggle: () => this.toggleEncryption(),
-      onSettingsClick: () => this.handleSettings(),
+      onSettingsClick: props.onNavigateToSettings ?? (() => this.handleSettings()),
       onUserClick: () => this.handleUserMenu(),
     });
     this.element.appendChild(this.header.getElement());
 
+    // Sidebar (메뉴 클릭 시 토글, 고정 위치)
+    const isLoggedIn = !!TokenManager.getToken();
+    this.sidebar = new Sidebar({
+      files: [],
+      isOpen: false,
+      position: 'left',
+      onFileClick: (path) => this.loadFile(path),
+      onFileDelete: isLoggedIn ? (path, name) => this.handleDeleteFile(path, name) : undefined,
+      onSearch: (query) => this.handleSearch(query),
+      onNewFileClick: isLoggedIn ? () => this.handleNewFile() : undefined,
+      onUploadClick: isLoggedIn ? () => this.handleUpload() : undefined,
+      onLocalFileClick: () => this.handleOpenLocalFile(),
+    });
+    this.element.appendChild(this.sidebar.getElement());
+
     // Main container
     const mainContainer = document.createElement('div');
     mainContainer.className = 'viewer-page__main';
-
-    // Sidebar
-    this.sidebar = new Sidebar({
-      files: [],
-      isOpen: this.isSidebarOpen,
-      onFileClick: (path) => this.loadFile(path),
-      onNewFileClick: () => this.handleNewFile(),
-      onUploadClick: () => this.handleUpload(),
-      onLocalFileClick: () => this.handleOpenLocalFile(),
-      onFileDelete: (path, name) => this.handleDeleteFile(path, name),
-      onSearch: (query) => this.handleSearch(query),
-    });
-    mainContainer.appendChild(this.sidebar.getElement());
 
     // Content area
     const contentWrapper = document.createElement('div');
@@ -115,12 +127,20 @@ export class ViewerPage {
     this.contentArea = document.createElement('div');
     this.contentArea.className = 'viewer-page__content';
     contentWrapper.appendChild(this.contentArea);
+    this.setupContentDropZone();
 
-    // Markdown renderer
+    // 빈 상태 (파일 선택 안내) - 문서가 없을 때 표시
+    this.emptyStateElement = this.createEmptyState();
+    this.contentArea.appendChild(this.emptyStateElement);
+
+    // 렌더러 영역 (파일이 열렸을 때 표시)
+    this.rendererWrapper = document.createElement('div');
+    this.rendererWrapper.className = 'viewer-page__renderer-wrapper';
     const rendererContainer = document.createElement('div');
     rendererContainer.className = 'viewer-page__renderer';
     this.markdownRenderer = new MarkdownRenderer(rendererContainer);
-    this.contentArea.appendChild(rendererContainer);
+    this.rendererWrapper.appendChild(rendererContainer);
+    this.contentArea.appendChild(this.rendererWrapper);
 
     mainContainer.appendChild(contentWrapper);
     this.element.appendChild(mainContainer);
@@ -139,20 +159,128 @@ export class ViewerPage {
     Toast.init();
   }
 
+  /** 빈 상태 UI: 문서가 없을 때 파일 선택 안내 (설계: 문서가 없으면 빈 화면 또는 파일 선택 안내 표시) */
+  private createEmptyState(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.className = 'viewer-page__empty-state';
+    wrap.setAttribute('aria-label', '파일 선택 안내');
+
+    const title = document.createElement('h2');
+    title.className = 'viewer-page__empty-state-title';
+    title.textContent = '문서를 선택하거나 새로 만들어 보세요';
+    wrap.appendChild(title);
+
+    const desc = document.createElement('p');
+    desc.className = 'viewer-page__empty-state-desc';
+    desc.textContent = '메뉴(☰)에서 파일 목록을 확인하거나, 아래에서 시작하세요.';
+    wrap.appendChild(desc);
+
+    const actions = document.createElement('div');
+    actions.className = 'viewer-page__empty-state-actions';
+
+    const localBtn = document.createElement('button');
+    localBtn.type = 'button';
+    localBtn.className = 'viewer-page__empty-state-btn viewer-page__empty-state-btn--primary';
+    localBtn.innerHTML = '<i class="fas fa-folder-open" aria-hidden="true"></i> 로컬 파일 열기';
+    localBtn.addEventListener('click', () => this.handleOpenLocalFile());
+    actions.appendChild(localBtn);
+
+    const newBtn = document.createElement('button');
+    newBtn.type = 'button';
+    newBtn.className = 'viewer-page__empty-state-btn viewer-page__empty-state-btn--secondary empty-state-btn--login-only';
+    newBtn.innerHTML = '<i class="fas fa-plus" aria-hidden="true"></i> 새 파일';
+    newBtn.addEventListener('click', () => this.handleNewFile());
+    actions.appendChild(newBtn);
+
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.className = 'viewer-page__empty-state-btn viewer-page__empty-state-btn--secondary empty-state-btn--login-only';
+    uploadBtn.innerHTML = '<i class="fas fa-upload" aria-hidden="true"></i> 파일 업로드';
+    uploadBtn.addEventListener('click', () => this.handleUpload());
+    actions.appendChild(uploadBtn);
+
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  /** 드래그앤드롭으로 파일 열기 (설계: FR-2.2 드래그앤드롭으로 파일 열기) */
+  private setupContentDropZone(): void {
+    const allow = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.contentArea.classList.add('viewer-page__content--drag-over');
+    };
+    const leave = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.contentArea.classList.remove('viewer-page__content--drag-over');
+    };
+    const drop = async (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.contentArea.classList.remove('viewer-page__content--drag-over');
+      const file = e.dataTransfer?.files?.[0];
+      if (!file || (!file.name.endsWith('.md') && !file.name.endsWith('.markdown'))) {
+        if (file) Toast.warning('마크다운 파일(.md)만 열 수 있습니다.');
+        return;
+      }
+      try {
+        this.loading.show();
+        const content = await file.text();
+        this.currentFile = {
+          path: file.name,
+          name: file.name,
+          content,
+          encrypted: false,
+          lastModified: new Date(file.lastModified).toISOString(),
+          size: file.size,
+        };
+        this.isLocalFileMode = false;
+        this.localFileInfo = null;
+        this.updateEmptyState();
+        this.header.updateFileName(file.name);
+        this.markdownRenderer.render(content);
+        Toast.success(`"${file.name}"을(를) 열었습니다.`);
+      } catch (err) {
+        console.error('Dropped file read error:', err);
+        Toast.error('파일을 읽는 중 오류가 발생했습니다.');
+      } finally {
+        this.loading.hide();
+      }
+    };
+    this.contentArea.addEventListener('dragover', allow);
+    this.contentArea.addEventListener('dragenter', allow);
+    this.contentArea.addEventListener('dragleave', leave);
+    this.contentArea.addEventListener('drop', drop);
+  }
+
+  /** 빈 상태 / 렌더러 표시 토글 (문서 없음 → 안내, 문서 있음 → 렌더러) */
+  private updateEmptyState(): void {
+    const hasFile = this.currentFile != null;
+    this.rendererWrapper.classList.toggle('viewer-page__renderer-wrapper--visible', hasFile);
+
+    const isLoggedIn = !!TokenManager.getToken();
+    this.contentArea.querySelectorAll('.empty-state-btn--login-only').forEach((el) => {
+      (el as HTMLElement).style.display = isLoggedIn ? '' : 'none';
+    });
+  }
+
   private async init(props: ViewerPageProps): Promise<void> {
-    // 사용자 정보 로드
-    await this.loadUserInfo();
+    const isLoggedIn = !!TokenManager.getToken();
 
-    // 파일 목록 로드
-    await this.loadFileList();
-
-    // 초기 파일 로드
-    if (props.initialFilePath) {
-      await this.loadFile(props.initialFilePath);
+    if (isLoggedIn) {
+      await this.loadUserInfo();
+      await this.loadFileList();
+      if (props.initialFilePath) {
+        await this.loadFile(props.initialFilePath);
+      } else {
+        await this.loadLastDocument();
+      }
     } else {
-      // 마지막 문서 자동 로드
-      await this.loadLastDocument();
+      // 비로그인: 빈 뷰어 (로컬 파일 열기만 가능)
+      this.applySearchFilter();
     }
+    this.updateEmptyState();
   }
 
   private async loadUserInfo(): Promise<void> {
@@ -163,7 +291,10 @@ export class ViewerPage {
       }
     } catch (error) {
       console.error('Failed to load user info:', error);
-      Toast.error('사용자 정보를 불러오는 중 오류가 발생했습니다.');
+      // 토큰이 없을 때는 조용히 처리 (비로그인 뷰어 모드)
+      if (TokenManager.getToken()) {
+        Toast.error('사용자 정보를 불러오는 중 오류가 발생했습니다.');
+      }
     }
   }
 
@@ -193,28 +324,95 @@ export class ViewerPage {
     }
 
     const fileItems = this.transformToFileItems(filteredFiles);
-    this.sidebar.updateFiles(fileItems);
+    this.sidebar?.updateFiles(fileItems);
   }
 
+  /** 평면 파일 목록 → 폴더 트리 변환 (설계: FR-2.1 폴더 트리 구조, 폴더별 파일 그룹화) */
   private transformToFileItems(files: FileMetadata[]): FileItem[] {
-    // FileMetadata를 FileItem 형식으로 변환
-    return files.map((file) => ({
+    const flat: FileItem[] = files.map((file) => ({
       name: file.name,
       path: file.path,
-      type: file.type,
-      encrypted: file.encrypted || false, // 암호화 여부 전달
-      // children은 API 응답에 포함되지 않으므로 별도 처리 필요
-      // 실제 구현에서는 서버에서 트리 구조를 반환하거나 클라이언트에서 구성
+      type: (file.type as 'file' | 'directory') || 'file',
+      encrypted: file.encrypted || false,
     }));
+    return this.buildFileTree(flat);
+  }
+
+  /** 경로 기준으로 디렉토리 노드를 만들고 트리 구조로 변환 */
+  private buildFileTree(items: FileItem[]): FileItem[] {
+    const pathToChildren = new Map<string, FileItem[]>();
+
+    const ensureParent = (parentPath: string, child: FileItem): void => {
+      const list = pathToChildren.get(parentPath) ?? [];
+      if (!pathToChildren.has(parentPath)) pathToChildren.set(parentPath, list);
+      list.push(child);
+    };
+
+    for (const item of items) {
+      const path = item.path;
+      const segments = path.split('/').filter(Boolean);
+      if (segments.length === 0) continue;
+
+      const fileItem: FileItem = { ...item, type: 'file' };
+
+      if (segments.length === 1) {
+        ensureParent('', fileItem);
+        continue;
+      }
+
+      // 경로에 포함된 디렉토리 노드 생성
+      for (let i = 1; i < segments.length; i++) {
+        const dirPath = segments.slice(0, i).join('/');
+        const dirName: string = segments[i - 1] ?? '';
+        if (!pathToChildren.has(dirPath)) {
+          const dirItem: FileItem = {
+            name: dirName,
+            path: dirPath,
+            type: 'directory',
+            children: [],
+          };
+          const parentPath = i === 1 ? '' : segments.slice(0, i - 1).join('/');
+          ensureParent(parentPath, dirItem);
+          pathToChildren.set(dirPath, []); // 자식 목록은 아래에서 채움
+        }
+      }
+
+      const parentPath = segments.slice(0, -1).join('/');
+      const parentList = pathToChildren.get(parentPath);
+      if (parentList) {
+        parentList.push(fileItem);
+      } else {
+        pathToChildren.set(parentPath, [fileItem]);
+      }
+    }
+
+    const buildTree = (parentPath: string): FileItem[] => {
+      const list = pathToChildren.get(parentPath) ?? [];
+      return list
+        .sort((a, b) => {
+          if (a.type !== b.type) return a.type === 'directory' ? -1 : 1;
+          return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+        })
+        .map((item) => {
+          if (item.type === 'directory' && item.path) {
+            return { ...item, children: buildTree(item.path) };
+          }
+          return item;
+        });
+    };
+
+    return buildTree('');
   }
 
   private async loadFile(path: string): Promise<void> {
+    this.visibilityManager?.stopChecking();
     try {
       this.loading.show();
       const fileContent = await readFile(path);
       
       if (fileContent) {
         this.currentFile = fileContent;
+        this.updateEmptyState();
         // 파일의 암호화 상태로 초기화 (이미 암호화된 파일이면 활성화)
         this.isEncryptionEnabled = fileContent.encrypted || false;
         this.header.updateFileName(fileContent.name);
@@ -255,6 +453,14 @@ export class ViewerPage {
 
         // 마지막 문서 경로 저장
         localStorage.setItem('last_file_path', path);
+
+        // 서버 파일인 경우 탭 복귀 시 변경 감지 (알림 후 새로고침)
+        if (!this.isLocalFileMode && this.visibilityManager) {
+          this.visibilityManager.startChecking(path, () => {
+            Toast.info('파일이 변경되었습니다. 새로고침합니다.');
+            this.loadFile(path);
+          });
+        }
       } else {
         Toast.error('파일을 불러올 수 없습니다.');
       }
@@ -294,7 +500,7 @@ export class ViewerPage {
         // 마지막 문서 경로 저장
         localStorage.setItem('last_file_path', fileContent.path);
         return;
-      } catch (error) {
+      } catch {
         // 자동 복호화 실패 - 다이얼로그 표시
         console.log('Auto decryption failed, showing dialog');
       }
@@ -342,6 +548,7 @@ export class ViewerPage {
         this.currentFile = null;
         this.header.updateFileName('');
         this.markdownRenderer.clear();
+        this.updateEmptyState();
       },
     });
     
@@ -362,15 +569,10 @@ export class ViewerPage {
       if (lastDoc) {
         await this.loadFile(lastDoc.path);
       }
-    } catch (error) {
+    } catch {
       // 마지막 문서가 없는 경우 무시
       console.log('No last document found');
     }
-  }
-
-  private toggleSidebar(): void {
-    this.isSidebarOpen = !this.isSidebarOpen;
-    this.sidebar.toggle();
   }
 
   private enterEditMode(): void {
@@ -401,7 +603,7 @@ export class ViewerPage {
           this.autoSaveManager.onContentChange(newContent);
         }
       },
-      onSave: () => this.handleSave(),
+      onSave: () => this.handleSave({ encrypt: false }),
       onClose: () => this.exitEditMode(),
     });
 
@@ -478,7 +680,8 @@ export class ViewerPage {
     this.header.updateSaveStatus('saved');
   }
 
-  private async handleSave(): Promise<void> {
+  /** @param option.encrypt true면 암호화하여 저장 다이얼로그 표시 (설계: 저장 옵션 드롭다운) */
+  private async handleSave(option?: { encrypt?: boolean }): Promise<void> {
     if (!this.currentFile || !this.editor) {
       return;
     }
@@ -489,8 +692,8 @@ export class ViewerPage {
       return;
     }
 
-    // 암호화가 활성화되어 있으면 암호화 다이얼로그 표시
-    if (this.isEncryptionEnabled) {
+    // 암호화하여 저장 선택 시 또는 기존 암호화 토글이 켜져 있으면 암호화 다이얼로그 표시
+    if (option?.encrypt ?? this.isEncryptionEnabled) {
       this.showEncryptionDialog();
       return;
     }
@@ -560,7 +763,7 @@ export class ViewerPage {
     this.element.appendChild(encryptionDialog.getElement());
   }
 
-  private async performSave(content: string, encrypted: boolean, encryptedData?: any): Promise<void> {
+  private async performSave(content: string, encrypted: boolean, encryptedData?: EncryptedData): Promise<void> {
     if (!this.currentFile) {
       return;
     }
@@ -641,7 +844,8 @@ export class ViewerPage {
 
   private handleUserMenu(): void {
     if (!this.currentUser) {
-      Toast.error('사용자 정보를 불러올 수 없습니다.');
+      // 비로그인 시 로그인 페이지로 이동
+      window.location.href = '/login';
       return;
     }
 
@@ -702,18 +906,16 @@ export class ViewerPage {
       allowSecureDelete: true,
       onDeleteSuccess: async () => {
         Toast.success(`파일 "${fileName}"이 삭제되었습니다.`);
-        // 파일 목록 새로고침
         await this.loadFileList();
-        // 현재 파일이 삭제된 경우 콘텐츠 초기화
         if (this.currentFile?.path === filePath) {
+          this.visibilityManager?.stopChecking();
           this.currentFile = null;
           this.header.updateFileName('');
           this.markdownRenderer.clear();
+          this.updateEmptyState();
         }
       },
-      onCancel: () => {
-        // 취소 시 아무 작업 없음
-      },
+      onCancel: () => {},
     });
     this.element.appendChild(dialog.getElement());
   }
@@ -748,6 +950,7 @@ export class ViewerPage {
         return;
       }
 
+      this.visibilityManager?.stopChecking();
       // 로컬 파일 모드 활성화
       this.isLocalFileMode = true;
       this.localFileInfo = fileInfo;
@@ -761,6 +964,7 @@ export class ViewerPage {
         lastModified: new Date(fileInfo.lastModified).toISOString(),
         size: fileInfo.content.length,
       };
+      this.updateEmptyState();
 
       // Header 업데이트
       this.header.updateFileName(fileInfo.name);
@@ -847,6 +1051,7 @@ export class ViewerPage {
   }
 
   destroy(): void {
+    this.visibilityManager?.stopChecking();
     // 자동 저장 중지
     if (this.autoSaveManager) {
       this.autoSaveManager.stop();
@@ -866,7 +1071,7 @@ export class ViewerPage {
     }
 
     this.header.destroy();
-    this.sidebar.destroy();
+    this.sidebar?.destroy();
     this.footer.destroy();
     this.loading.destroy();
     // Toast는 static이므로 destroy 불필요

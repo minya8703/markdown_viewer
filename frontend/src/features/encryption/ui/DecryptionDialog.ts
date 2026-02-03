@@ -6,8 +6,9 @@
  * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
  */
 
-import { Button } from '@shared/ui/Button';
 import './EncryptionDialog.css'; // 같은 스타일 사용
+
+type ElementWithKeydown = HTMLElement & { __keydownHandler?: (e: KeyboardEvent) => void };
 
 export interface DecryptionDialogProps {
   fileName: string;
@@ -113,7 +114,7 @@ export class DecryptionDialog {
       }
     };
     document.addEventListener('keydown', handleKeyDown);
-    (this.element as any).__keydownHandler = handleKeyDown;
+    (this.element as ElementWithKeydown).__keydownHandler = handleKeyDown;
 
     // 포커스 설정
     setTimeout(() => {
@@ -137,7 +138,7 @@ export class DecryptionDialog {
     }
 
     // 키보드 이벤트 리스너 제거
-    const handler = (this.element as any).__keydownHandler;
+    const handler = (this.element as ElementWithKeydown).__keydownHandler;
     if (handler) {
       document.removeEventListener('keydown', handler);
     }
@@ -150,7 +151,7 @@ export class DecryptionDialog {
   }
 
   destroy(): void {
-    const handler = (this.element as any).__keydownHandler;
+    const handler = (this.element as ElementWithKeydown).__keydownHandler;
     if (handler) {
       document.removeEventListener('keydown', handler);
     }

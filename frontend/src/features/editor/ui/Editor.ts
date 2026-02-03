@@ -8,6 +8,7 @@
  */
 
 import { handleSmartPaste, hasUnsavedChanges } from '../lib/editor';
+import { ConfirmCloseDialog } from './ConfirmCloseDialog';
 import './Editor.css';
 
 export interface EditorCallbacks {
@@ -21,7 +22,7 @@ export class Editor {
   private textarea: HTMLTextAreaElement | null = null;
   private callbacks: EditorCallbacks;
   private originalContent: string = '';
-  private fileName: string = '';
+  private _fileName: string = '';
 
   constructor(container: HTMLElement, callbacks: EditorCallbacks = {}) {
     this.container = container;
@@ -121,25 +122,27 @@ export class Editor {
 
   private handleClose(): void {
     if (this.hasUnsavedChanges()) {
-      const shouldSave = confirm('저장되지 않은 변경사항이 있습니다. 저장하시겠습니까?');
-      if (shouldSave) {
-        if (this.callbacks.onSave) {
-          this.callbacks.onSave();
-        }
-        // 저장 후 닫기
-        setTimeout(() => {
-          if (this.callbacks.onClose) {
-            this.callbacks.onClose();
+      const dialog = new ConfirmCloseDialog({
+        onResult: (result) => {
+          if (result === 'save-and-close') {
+            if (this.callbacks.onSave) {
+              this.callbacks.onSave();
+            }
+            setTimeout(() => {
+              if (this.callbacks.onClose) {
+                this.callbacks.onClose();
+              }
+            }, 100);
+          } else if (result === 'close-without-save') {
+            if (this.callbacks.onClose) {
+              this.callbacks.onClose();
+            }
           }
-        }, 100);
-      } else {
-        // 저장하지 않고 닫기
-        if (this.callbacks.onClose) {
-          this.callbacks.onClose();
-        }
-      }
+          // 'cancel'은 아무 작업 없음
+        },
+      });
+      document.body.appendChild(dialog.getElement());
     } else {
-      // 변경사항 없으면 바로 닫기
       if (this.callbacks.onClose) {
         this.callbacks.onClose();
       }
@@ -179,11 +182,14 @@ export class Editor {
    * 파일명 설정
    */
   setFileName(fileName: string): void {
-    this.fileName = fileName;
+    this._fileName = fileName;
     const fileNameElement = this.container.querySelector('.editor__filename');
-    if (fileNameElement) {
-      fileNameElement.textContent = fileName;
-    }
+    if (fileNameElement) fileNameElement.textContent = fileName;
+  }
+
+  /** 현재 설정된 파일명 (헤더 표시용 등) */
+  getFileName(): string {
+    return this._fileName;
   }
 
   /**
@@ -248,7 +254,7 @@ export class Editor {
    */
   clear(): void {
     this.originalContent = '';
-    this.fileName = '';
+    this._fileName = '';
     if (this.textarea) {
       this.textarea.value = '';
     }

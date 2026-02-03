@@ -75,6 +75,35 @@
 - **내용**: Google OAuth2 설정, 데이터베이스 설정, 환경 변수 설정, JWT Secret 생성, 문제 해결
 - **상태**: ✅ 완료
 
+### 14. 시스템 자동화 가이드
+- **파일**: `14_AUTOMATION.md`
+- **내용**: CI(GitHub Actions/Jenkins), 로컬 통합 검사, 개발 서버 실행, 빌드·모니터링 자동화
+- **상태**: ✅ 완료
+
+### 15. Jenkins·모니터링 요약
+- **파일**: `15_JENKINS_AND_MONITORING.md`
+- **내용**: Jenkins 설정 시점, 테스트 확인 방법, 모니터링 단계별 도입(Actuator/Prometheus/Grafana)
+- **상태**: ✅ 완료
+
+## 환경·운영 문서 (루트)
+
+| 번호 | 파일 | 설명 |
+|------|------|------|
+| 14 | 14_AUTOMATION.md | 자동화(CI, 로컬 검사, run-dev) |
+| 15 | 15_JENKINS_AND_MONITORING.md | Jenkins·테스트·모니터링 요약 |
+
+## 백엔드 전용 문서 (backend/)
+
+백엔드 실행·DB·OAuth 설정 등은 다음을 참고하세요.
+
+| 파일 | 설명 |
+|------|------|
+| backend/README.md | 백엔드 개요·빌드·실행 |
+| backend/SETUP_GUIDE.md | 초기 설정 가이드 |
+| backend/DATABASE_SETUP.md | DB 설치·스키마 |
+| backend/CHECK_OAUTH_CONFIG.md | OAuth 설정 확인 |
+| backend/RUN.md | 실행 방법 상세 |
+
 ## 문서 작성 순서
 
 1. ✅ 01. 시스템 아키텍처 (완료)
@@ -90,6 +119,8 @@
 11. ✅ 11. RDBMS 선택 가이드 (완료)
 12. ✅ 12. 코딩 규약 및 스타일 가이드 (완료)
 13. ✅ 13. 백엔드 환경 설정 가이드 (완료)
+14. ✅ 14. 시스템 자동화 가이드 (완료)
+15. ✅ 15. Jenkins·모니터링 요약 (완료)
 
 ## 문서 간 의존성
 
@@ -108,7 +139,9 @@
             ├── 10. 10_MSA_ARCHITECTURE.md (기반)
             ├── 11. 11_RDBMS_RECOMMENDATION.md (기반)
             ├── 12. 12_CODING_CONVENTIONS.md (기반)
-            └── 13. 13_BACKEND_ENVIRONMENT_SETUP.md (기반)
+            ├── 13. 13_BACKEND_ENVIRONMENT_SETUP.md (기반)
+            ├── 14. 14_AUTOMATION.md (환경·운영)
+            └── 15. 15_JENKINS_AND_MONITORING.md (환경·운영)
 ```
 
 ### 문서 번호 체계
@@ -126,12 +159,15 @@
 - **11**: RDBMS 선택 가이드 (`11_RDBMS_RECOMMENDATION.md`)
 - **12**: 코딩 규약 및 스타일 가이드 (`12_CODING_CONVENTIONS.md`)
 - **13**: 백엔드 환경 설정 가이드 (`13_BACKEND_ENVIRONMENT_SETUP.md`)
+- **14**: 시스템 자동화 가이드 (`14_AUTOMATION.md`)
+- **15**: Jenkins·모니터링 요약 (`15_JENKINS_AND_MONITORING.md`)
 
 ## 참고 사항
 
-- **99번 문서**는 모든 설계 문서의 목차 및 인덱스 역할을 합니다.
+- **99번 문서**는 모든 설계·환경·운영 문서의 목차 및 인덱스 역할을 합니다.
 - **01번 문서** (시스템 아키텍처)는 최상위 문서로, 다른 모든 문서의 기반이 됩니다.
-- **02-06번 문서**는 시스템 아키텍처를 기반으로 작성된 상세 설계 문서입니다.
+- **02~13번**: 설계 문서. **14~15번**: 환경·운영 문서(자동화, Jenkins·모니터링). 모두 **프로젝트 루트**에 있습니다.
+- **백엔드 전용** 문서(SETUP_GUIDE, DATABASE_SETUP, CHECK_OAUTH_CONFIG, RUN)는 `backend/` 폴더에 있습니다.
 - 각 설계서는 독립적으로 읽을 수 있도록 충분한 컨텍스트를 포함합니다.
 - 설계 변경 시 관련 문서들을 함께 업데이트해야 합니다.
 - 문서 번호는 문서 간 의존성과 참조를 쉽게 파악하기 위한 것입니다.

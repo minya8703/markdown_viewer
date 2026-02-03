@@ -7,12 +7,17 @@
  * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (pages 레이어), TypeScript 코딩 규약
  */
 
+import { applyTheme } from '@shared/lib/theme';
 import type { AutoSaveConfig, EncryptionConfig } from '@shared/types';
 import './SettingsPage.css';
+
+type ElementWithKeydown = HTMLElement & { __keydownHandler?: (e: KeyboardEvent) => void };
 
 export interface SettingsPageProps {
   onClose?: () => void;
   onSave?: (settings: SettingsData) => void;
+  /** true면 전용 화면 레이아웃(전체 화면, 오버레이 아님) */
+  fullPage?: boolean;
 }
 
 export interface SettingsData {
@@ -37,7 +42,7 @@ export class SettingsPage {
   constructor(props: SettingsPageProps = {}) {
     this.props = props;
     this.element = document.createElement('div');
-    this.element.className = 'settings-page';
+    this.element.className = 'settings-page' + (props.fullPage ? ' settings-page--full' : '');
     
     // localStorage에서 설정 로드
     this.settings = this.loadSettings();
@@ -277,7 +282,7 @@ export class SettingsPage {
                     시스템 설정 따르기
                   </option>
                 </select>
-                <span class="settings-item__hint">(향후 구현 예정)</span>
+                <span class="settings-item__hint">밝은/어두운 테마 또는 OS 설정 따르기</span>
               </div>
             </div>
           </section>
@@ -345,7 +350,7 @@ export class SettingsPage {
     document.addEventListener('keydown', handleKeyDown);
     
     // cleanup을 위해 저장
-    (this.element as any).__keydownHandler = handleKeyDown;
+    (this.element as ElementWithKeydown).__keydownHandler = handleKeyDown;
   }
 
   private handleSave(): void {
@@ -371,6 +376,7 @@ export class SettingsPage {
     };
 
     this.saveSettings(settings);
+    applyTheme(settings.appearance.theme);
     this.handleClose();
   }
 
@@ -378,6 +384,7 @@ export class SettingsPage {
     if (confirm('모든 설정을 기본값으로 재설정하시겠습니까?')) {
       localStorage.removeItem('app_settings');
       this.settings = this.loadSettings();
+      applyTheme(this.settings.appearance.theme);
       this.render();
       this.setupEventListeners();
     }
@@ -385,7 +392,7 @@ export class SettingsPage {
 
   private handleClose(): void {
     // 키보드 이벤트 리스너 제거
-    const handler = (this.element as any).__keydownHandler;
+    const handler = (this.element as ElementWithKeydown).__keydownHandler;
     if (handler) {
       document.removeEventListener('keydown', handler);
     }
@@ -406,6 +413,10 @@ export class SettingsPage {
   }
 
   destroy(): void {
-    this.handleClose();
+    // 라우터 전환 시 정리만 수행 (onClose는 사용자 취소/저장 시에만 호출)
+    const handler = (this.element as HTMLElement & { __keydownHandler?: (e: KeyboardEvent) => void }).__keydownHandler;
+    if (handler) {
+      document.removeEventListener('keydown', handler);
+    }
   }
 }

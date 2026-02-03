@@ -1,0 +1,84 @@
+.confirm-close-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+}
+
+.confirm-close-dialog__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.confirm-close-dialog__container {
+  position: relative;
+  background: var(--bg-primary);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xl);
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.confirm-close-dialog__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.confirm-close-dialog__desc {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-xl);
+}
+
+.confirm-close-dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.confirm-close-dialog__btn {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.confirm-close-dialog__btn:hover {
+  background: var(--bg-secondary, #f5f5f5);
+  border-color: var(--text-disabled);
+}
+
+.confirm-close-dialog__btn--primary {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
+}
+
+.confirm-close-dialog__btn--primary:hover {
+  opacity: 0.9;
+}
+
+.confirm-close-dialog__btn--secondary {
+  background: var(--bg-primary);
+}
+
+.confirm-close-dialog__btn--ghost {
+  border-color: transparent;
+  background: transparent;
+}
+
+.confirm-close-dialog__btn--ghost:hover {
+  background: var(--bg-secondary, #f5f5f5);
+}

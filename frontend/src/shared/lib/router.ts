@@ -69,12 +69,11 @@ export class Router {
         throw error;
       }
     } else {
-      // 기본 라우트 처리
+      // 기본 라우트 처리: 미등록 경로는 뷰어로 리다이렉트 (설계: 비로그인 뷰어 접근 허용)
       console.warn(`Route not found: ${path}`);
-      // 404 페이지로 리다이렉트 또는 기본 페이지 표시
       if (path !== '/login') {
-        console.log('Redirecting to /login');
-        this.navigate('/login');
+        console.log('Redirecting to /viewer');
+        this.navigate('/viewer');
       } else {
         // /login도 등록되지 않은 경우 (초기화 문제)
         console.error('CRITICAL: /login route not registered!');

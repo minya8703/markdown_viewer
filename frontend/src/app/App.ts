@@ -8,12 +8,15 @@
  * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처, TypeScript 코딩 규약
  */
 
+import { initTheme } from '@shared/lib/theme';
 import { PageVisibilityManager } from '@shared/lib/visibility';
 import { Router } from '@shared/lib/router';
+import { isAuthenticated } from '@features/auth';
 import { LoginPage } from '@pages/login';
 import { ViewerPage } from '@pages/viewer';
-import { TokenManager } from '@shared/api/client';
+import { SettingsPage } from '@pages/settings';
 
+type RouteHandler = (container: HTMLElement) => void;
 export class App {
   private router: Router;
   private visibilityManager: PageVisibilityManager;
@@ -26,6 +29,7 @@ export class App {
   init(): void {
     console.log('App.init() called');
     try {
+      initTheme();
       // 페이지 가시성 관리 초기화
       this.visibilityManager.init();
       console.log('Visibility manager initialized');
@@ -44,10 +48,13 @@ export class App {
   }
 
   private registerRoutes(): void {
-    // 로그인 페이지
+    // 로그인 페이지 (이미 로그인된 경우 뷰어로 리다이렉트)
     this.router.register('/login', (container) => {
+      if (isAuthenticated()) {
+        this.router.navigate('/viewer');
+        return;
+      }
       const loginPage = new LoginPage(() => {
-        // 로그인 성공 시 뷰어 페이지로 이동
         this.router.navigate('/viewer');
       });
       container.appendChild(loginPage.getElement());
@@ -58,7 +65,6 @@ export class App {
     this.router.register('/auth/google/callback', async () => {
       try {
         await LoginPage.handleCallback();
-        // 성공 시 뷰어 페이지로 이동
         this.router.navigate('/viewer');
       } catch (error) {
         console.error('OAuth callback error:', error);
@@ -66,33 +72,48 @@ export class App {
       }
     });
 
-    // 뷰어 페이지
-    this.router.register('/viewer', (container) => {
-      // 인증 확인
-      if (!TokenManager.getToken()) {
-        this.router.navigate('/login');
-        return;
-      }
-
-      // URL 파라미터에서 파일 경로 확인
+    // 뷰어 페이지 (인증 필요)
+    this.router.register('/viewer', this.withAuthGuard((container) => {
       const urlParams = new URLSearchParams(window.location.search);
       const filePath = urlParams.get('file');
 
       const viewerPage = new ViewerPage({
         initialFilePath: filePath || undefined,
+        onNavigateToSettings: () => this.router.navigate('/settings'),
+        visibilityManager: this.visibilityManager,
       });
       container.appendChild(viewerPage.getElement());
       this.router.setCurrentPage(viewerPage);
-    });
+    }));
 
-    // 루트 경로는 인증 상태에 따라 리다이렉트
+    // 설정 페이지 (인증 필요)
+    this.router.register('/settings', this.withAuthGuard((container) => {
+      const settingsPage = new SettingsPage({
+        fullPage: true,
+        onClose: () => this.router.navigate('/viewer'),
+        onSave: () => this.router.navigate('/viewer'),
+      });
+      container.appendChild(settingsPage.getElement());
+      this.router.setCurrentPage(settingsPage);
+    }));
+
+    // 루트 경로는 뷰어로 이동 (가드에서 미인증 시 /login으로 리다이렉트)
     this.router.register('/', () => {
-      const token = TokenManager.getToken();
-      if (token) {
-        this.router.navigate('/viewer');
-      } else {
-        this.router.navigate('/login');
-      }
+      this.router.navigate('/viewer');
     });
+  }
+
+  /**
+   * 인증이 필요한 라우트용 가드.
+   * 미인증 시 /login으로 리다이렉트하고 핸들러를 실행하지 않음.
+   */
+  private withAuthGuard(handler: RouteHandler): RouteHandler {
+    return (container: HTMLElement) => {
+      if (!isAuthenticated()) {
+        this.router.navigate('/login');
+        return;
+      }
+      handler(container);
+    };
   }
 }
