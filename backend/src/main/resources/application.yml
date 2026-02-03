@@ -5,7 +5,8 @@ spring:
   datasource:
     url: jdbc:mariadb://localhost:3306/markdown_viewer?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:adgjadgj11}
+    # 비밀번호는 반드시 환경 변수 DB_PASSWORD로 설정 (backend/.env 참고)
+    password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
   
   jpa:
