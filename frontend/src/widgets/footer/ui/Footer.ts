@@ -1,7 +1,11 @@
 /**
  * Footer 위젯
  * 하단 고정 푸터 컴포넌트 (Google AdSense 영역)
- * 
+ *
+ * 부적절한 광고 차단: 코드가 아닌 Google AdSense 계정에서 설정합니다.
+ * → Brand safety → Blocking controls → Manage Sensitive categories / Ad review center
+ * @see docs/project/ADSENSE_SAFETY.md
+ *
  * @see 02_REQUIREMENTS.md - FR-6.1 (Google AdSense 통합)
  * @see 05_UI_UX_DESIGN.md - Footer 컴포넌트 설계
  * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어)

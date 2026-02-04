@@ -11,6 +11,18 @@
   animation: fadeIn var(--transition-base);
 }
 
+/* 분할 뷰(편집|미리보기) 내부: 전체 화면 오버레이 비활성화 */
+.editor.editor--split {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  z-index: 0;
+  height: 100%;
+  min-height: 0;
+}
+
 .editor__container {
   display: flex;
   flex-direction: column;

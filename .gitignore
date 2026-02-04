@@ -1,56 +1,75 @@
-# Dependencies
+# ============================================================
+# Git에 올리지 않을 항목 (분류별)
+# 상세: docs/project/GIT_IGNORE_GUIDE.md
+# ============================================================
+
+# ---- 의존성 (재설치 가능) ----
 node_modules/
 .pnp
 .pnp.js
 
-# Build outputs
+# ---- 빌드 결과물 (재빌드 가능) ----
 dist/
 build/
-*.local
+*.tsbuildinfo
+*.class
+*.jar
+*.war
+*.ear
+target/
 
-# Environment variables
+# ---- 환경·시크릿 (로컬/배포별로 다름, 절대 커밋 금지) ----
 .env
 .env.local
 .env.*.local
+*.local
 
-# IDE
+# ---- 사용자·런타임 데이터 (재생성 가능, 개인 데이터 포함) ----
+backend/data/
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- IDE·에디터 (개인 설정) ----
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+*.iws
+*.iml
+*.ipr
+out/
 
-# OS
+# ---- OS 생성 파일 ----
 .DS_Store
 Thumbs.db
 
-# Logs
+# ---- 로그·캐시·임시 ----
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# TypeScript
-*.tsbuildinfo
-
-# Testing
-coverage/
-
-# Spring Boot (if backend is added later)
-target/
-*.class
-*.jar
-*.war
-*.ear
-*.log
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Temporary files
+.cache/
 *.tmp
 *.temp
-.cache/
+
+# ---- 테스트·커버리지 (재실행 가능) ----
+coverage/
+bin/
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# ---- 로컬 전용 문서 (배포·운영 참고용, 저장소에는 미포함) ----
+docs/deployment/DEPLOYMENT_PLAN.md
+docs/deployment/SSL_HTTPS_SETUP.md

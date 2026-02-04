@@ -47,3 +47,6 @@ application-prod.yml
 .env
 .env.local
 .env.*.local
+
+### User file storage (app.file-storage-base-path, 절대 커밋 금지) ###
+data/

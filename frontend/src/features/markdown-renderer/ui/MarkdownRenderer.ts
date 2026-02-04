@@ -51,7 +51,11 @@ export class MarkdownRenderer {
    * 에러 상태 표시
    */
   showError(message: string): void {
-    this.container.innerHTML = `<div class="error">${message}</div>`;
+    this.container.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = 'error';
+    div.textContent = message;
+    this.container.appendChild(div);
   }
 
   /**

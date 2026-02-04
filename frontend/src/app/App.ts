@@ -72,8 +72,8 @@ export class App {
       }
     });
 
-    // 뷰어 페이지 (인증 필요)
-    this.router.register('/viewer', this.withAuthGuard((container) => {
+    // 뷰어 페이지 (비로그인 접근 허용: 로컬 파일만 사용, FR-1.3)
+    this.router.register('/viewer', (container) => {
       const urlParams = new URLSearchParams(window.location.search);
       const filePath = urlParams.get('file');
 
@@ -84,7 +84,7 @@ export class App {
       });
       container.appendChild(viewerPage.getElement());
       this.router.setCurrentPage(viewerPage);
-    }));
+    });
 
     // 설정 페이지 (인증 필요)
     this.router.register('/settings', this.withAuthGuard((container) => {
@@ -97,7 +97,7 @@ export class App {
       this.router.setCurrentPage(settingsPage);
     }));
 
-    // 루트 경로는 뷰어로 이동 (가드에서 미인증 시 /login으로 리다이렉트)
+    // 루트 경로는 뷰어로 이동 (비로그인도 접근 가능)
     this.router.register('/', () => {
       this.router.navigate('/viewer');
     });

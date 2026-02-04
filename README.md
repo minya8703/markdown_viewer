@@ -71,19 +71,12 @@ markdown_viewer_v2/
 │   ├── package.json
 │   └── vite.config.ts
 │
-├── 01_SYSTEM_ARCHITECTURE.md    # 시스템 아키텍처 설계서
-├── 02_REQUIREMENTS.md           # 요구사항 명세서
-├── 03_API_SPECIFICATION.md      # API 명세서
-├── 04_DATABASE_DESIGN.md        # 데이터베이스 설계서
-├── 05_UI_UX_DESIGN.md           # UI/UX 설계서
-├── 06_DEPLOYMENT_GUIDE.md       # 배포 가이드
-├── 07_KUBERNETES_DEPLOYMENT.md  # Kubernetes 배포 가이드
-├── 08_MQ_KAFKA_GUIDE.md         # MQ/Kafka 비동기 처리 가이드
-├── 09_SPRING_MONITORING.md      # Spring 모니터링 가이드
-├── 10_MSA_ARCHITECTURE.md       # MSA 아키텍처 가이드
-├── 11_RDBMS_RECOMMENDATION.md   # RDBMS 선택 가이드
-├── 12_CODING_CONVENTIONS.md     # 코딩 규약 및 스타일 가이드
-└── 99_DESIGN_DOCUMENTS_INDEX.md # 설계 문서 인덱스
+├── docs/                        # 설계·배포·운영 문서 (폴더별 정리)
+│   ├── README.md                # 문서 목차
+│   ├── design/                  # 01~05, 99 (설계)
+│   ├── deployment/              # 06, 07, 배포 계획, SSL/HTTPS
+│   ├── infra-dev/               # 08~15 (인프라·개발)
+│   └── project/                 # 진행 현황·보안·AdSense
 ```
 
 ## 시작하기
@@ -113,7 +106,7 @@ npm run build
 5. **개발자 경험**: 읽기 좋은 깔끔한 코드
 6. **크로스 브라우징**: 다양한 브라우저 및 OS 환경 지원
 
-> 💡 **코딩 규약**: 프로젝트의 코딩 스타일과 규칙은 [코딩 규약 및 스타일 가이드](./12_CODING_CONVENTIONS.md)를 참고하세요.
+> 💡 **코딩 규약**: 프로젝트의 코딩 스타일과 규칙은 [코딩 규약 및 스타일 가이드](docs/infra-dev/12_CODING_CONVENTIONS.md)를 참고하세요.
 
 ## 자동화
 
@@ -125,19 +118,20 @@ npm run build
 | **개발 서버** (백엔드+프론트) | `.\scripts\run-dev.ps1` | `./scripts/run-dev.sh` |
 
 - **CI**: GitHub에 push 시 [GitHub Actions](.github/workflows/ci.yml)가 자동으로 빌드·테스트 실행. Jenkins 사용 시 루트의 `Jenkinsfile` 사용.
-- 상세: [14_AUTOMATION.md](./14_AUTOMATION.md), [15_JENKINS_AND_MONITORING.md](./15_JENKINS_AND_MONITORING.md)
+- 상세: [docs/infra-dev/14_AUTOMATION.md](docs/infra-dev/14_AUTOMATION.md), [docs/infra-dev/15_JENKINS_AND_MONITORING.md](docs/infra-dev/15_JENKINS_AND_MONITORING.md)
 
 ## 문서
 
-**설계·환경·운영 문서는 모두 프로젝트 루트에 있으며**, [설계 문서 인덱스](./99_DESIGN_DOCUMENTS_INDEX.md)에서 한 번에 확인할 수 있습니다.
+**설계·배포·운영 문서는 [docs/](docs/)에 폴더별로 정리되어 있으며**, [docs/README.md](docs/README.md)에서 목차를 확인할 수 있습니다.
 
 | 구분 | 문서 |
 |------|------|
-| **목차** | [99_DESIGN_DOCUMENTS_INDEX.md](./99_DESIGN_DOCUMENTS_INDEX.md) |
-| **설계** | [01 시스템 아키텍처](./01_SYSTEM_ARCHITECTURE.md) · [02 요구사항](./02_REQUIREMENTS.md) · [03 API](./03_API_SPECIFICATION.md) · [04 DB](./04_DATABASE_DESIGN.md) · [05 UI/UX](./05_UI_UX_DESIGN.md) |
-| **배포·인프라** | [06 배포](./06_DEPLOYMENT_GUIDE.md) · [07 Kubernetes](./07_KUBERNETES_DEPLOYMENT.md) · [08 MQ/Kafka](./08_MQ_KAFKA_GUIDE.md) · [09 모니터링](./09_SPRING_MONITORING.md) · [10 MSA](./10_MSA_ARCHITECTURE.md) · [11 RDBMS](./11_RDBMS_RECOMMENDATION.md) |
-| **환경·운영** | [12 코딩 규약](./12_CODING_CONVENTIONS.md) · [13 백엔드 환경](./13_BACKEND_ENVIRONMENT_SETUP.md) · [14 자동화](./14_AUTOMATION.md) · [15 Jenkins·모니터링](./15_JENKINS_AND_MONITORING.md) |
-| **백엔드 전용** | [backend/README.md](./backend/README.md) · [backend/SETUP_GUIDE.md](./backend/SETUP_GUIDE.md) · [backend/DATABASE_SETUP.md](./backend/DATABASE_SETUP.md) · [backend/CHECK_OAUTH_CONFIG.md](./backend/CHECK_OAUTH_CONFIG.md) · [backend/RUN.md](./backend/RUN.md) |
+| **목차** | [docs/README.md](docs/README.md) · [설계 인덱스](docs/design/99_DESIGN_DOCUMENTS_INDEX.md) |
+| **설계** | [01 아키텍처](docs/design/01_SYSTEM_ARCHITECTURE.md) · [02 요구사항](docs/design/02_REQUIREMENTS.md) · [03 API](docs/design/03_API_SPECIFICATION.md) · [04 DB](docs/design/04_DATABASE_DESIGN.md) · [05 UI/UX](docs/design/05_UI_UX_DESIGN.md) |
+| **배포** | [06 배포 가이드](docs/deployment/06_DEPLOYMENT_GUIDE.md) · [07 Kubernetes](docs/deployment/07_KUBERNETES_DEPLOYMENT.md) *(배포 계획·SSL/HTTPS 문서는 로컬 전용, Git 제외)* |
+| **인프라·개발** | [08 MQ/Kafka](docs/infra-dev/08_MQ_KAFKA_GUIDE.md) · [09 모니터링](docs/infra-dev/09_SPRING_MONITORING.md) · [10 MSA](docs/infra-dev/10_MSA_ARCHITECTURE.md) · [11 RDBMS](docs/infra-dev/11_RDBMS_RECOMMENDATION.md) · [12 코딩 규약](docs/infra-dev/12_CODING_CONVENTIONS.md) · [13 백엔드 환경](docs/infra-dev/13_BACKEND_ENVIRONMENT_SETUP.md) · [14 자동화](docs/infra-dev/14_AUTOMATION.md) · [15 Jenkins](docs/infra-dev/15_JENKINS_AND_MONITORING.md) |
+| **기타** | [기능 진행](docs/project/FEATURE_PROGRESS.md) · [보안 체크리스트](docs/project/SECURITY_CHECKLIST.md) · [AdSense](docs/project/ADSENSE_SAFETY.md) |
+| **백엔드 전용** | [backend/README.md](backend/README.md) · [backend/SETUP_GUIDE.md](backend/SETUP_GUIDE.md) · [backend/DATABASE_SETUP.md](backend/DATABASE_SETUP.md) · [backend/CHECK_OAUTH_CONFIG.md](backend/CHECK_OAUTH_CONFIG.md) · [backend/RUN.md](backend/RUN.md) |
 
 ## 라이선스
 

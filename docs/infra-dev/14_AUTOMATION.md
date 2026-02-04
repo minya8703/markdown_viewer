@@ -158,7 +158,7 @@ CI에서는 위와 동일한 방식으로 빌드하며, Jenkins는 성공 시 �
 4. **알림**  
    - Grafana Alert 또는 Prometheus Alertmanager로 슬랙·이메일 등 연동
 
-자세한 설정·엔드포인트는 **09_SPRING_MONITORING.md**, **06_DEPLOYMENT_GUIDE.md**, **15_JENKINS_AND_MONITORING.md**를 참고하세요.
+자세한 설정·엔드포인트는 [09_SPRING_MONITORING.md](09_SPRING_MONITORING.md), [06_DEPLOYMENT_GUIDE.md](../deployment/06_DEPLOYMENT_GUIDE.md), [15_JENKINS_AND_MONITORING.md](15_JENKINS_AND_MONITORING.md)를 참고하세요.
 
 ---
 
@@ -175,5 +175,5 @@ CI에서는 위와 동일한 방식으로 빌드하며, Jenkins는 성공 시 �
 ## 8. 관련 문서
 
 - **15_JENKINS_AND_MONITORING.md** — Jenkins 설정 시점, 테스트 확인, 모니터링 요약
-- **06_DEPLOYMENT_GUIDE.md** — 배포 절차·운영
+- [06_DEPLOYMENT_GUIDE.md](../deployment/06_DEPLOYMENT_GUIDE.md) — 배포 절차·운영
 - **09_SPRING_MONITORING.md** — Spring Boot 모니터링 상세

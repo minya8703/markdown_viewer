@@ -72,6 +72,9 @@ export class ViewerPage {
   private localFileInfo: LocalFileInfo | null = null; // 로컬 파일 정보
   private emptyStateElement!: HTMLElement; // 문서 없을 때 파일 선택 안내
   private rendererWrapper!: HTMLElement; // 렌더러 감싸는 영역 (빈 상태와 토글)
+  private splitViewElement: HTMLElement | null = null; // 편집 모드 시 분할 뷰(에디터|미리보기) 컨테이너
+  private scrollSyncLock: boolean = false; // 스크롤 동기화 시 상대 패널 리스너 무시
+  private scrollSyncUnsubscribe: (() => void) | null = null; // 편집 종료 시 스크롤 리스너 제거
   private visibilityManager: PageVisibilityManager | undefined; // 파일 변경 감지 (탭 복귀 시)
 
   constructor(props: ViewerPageProps = {}) {
@@ -575,6 +578,51 @@ export class ViewerPage {
     }
   }
 
+  /**
+   * 편집·미리보기 스크롤 비율 동기화.
+   * 한쪽을 스크롤하면 다른 쪽이 같은 비율(0~1) 위치로 맞춰짐.
+   */
+  private setupScrollSync(
+    editorEl: HTMLTextAreaElement,
+    previewEl: HTMLElement
+  ): () => void {
+    const getRatio = (el: HTMLElement & { scrollHeight?: number; clientHeight?: number; scrollTop?: number }): number => {
+      const max = (el.scrollHeight ?? 0) - (el.clientHeight ?? 0);
+      if (max <= 0) return 0;
+      return Math.max(0, Math.min(1, (el.scrollTop ?? 0) / max));
+    };
+    const setRatio = (el: HTMLElement & { scrollHeight?: number; clientHeight?: number; scrollTop?: number }, ratio: number): void => {
+      const max = (el.scrollHeight ?? 0) - (el.clientHeight ?? 0);
+      if (max <= 0) return;
+      el.scrollTop = ratio * max;
+    };
+
+    const onEditorScroll = (): void => {
+      if (this.scrollSyncLock) return;
+      this.scrollSyncLock = true;
+      setRatio(previewEl, getRatio(editorEl));
+      requestAnimationFrame(() => {
+        this.scrollSyncLock = false;
+      });
+    };
+    const onPreviewScroll = (): void => {
+      if (this.scrollSyncLock) return;
+      this.scrollSyncLock = true;
+      setRatio(editorEl, getRatio(previewEl));
+      requestAnimationFrame(() => {
+        this.scrollSyncLock = false;
+      });
+    };
+
+    editorEl.addEventListener('scroll', onEditorScroll, { passive: true });
+    previewEl.addEventListener('scroll', onPreviewScroll, { passive: true });
+
+    return () => {
+      editorEl.removeEventListener('scroll', onEditorScroll);
+      previewEl.removeEventListener('scroll', onPreviewScroll);
+    };
+  }
+
   private enterEditMode(): void {
     if (!this.currentFile) {
       Toast.warning('편집할 파일이 없습니다.');
@@ -588,20 +636,39 @@ export class ViewerPage {
     this.isEditMode = true;
     this.header.setEditMode(true);
 
-    // 에디터 생성
-    const editorContainer = document.createElement('div');
-    editorContainer.className = 'viewer-page__editor';
-    this.element.appendChild(editorContainer);
-
-    // 에디터에 콘텐츠 설정
     const content = this.currentFile.content || '';
-    
+
+    // 분할 뷰: 왼쪽 에디터, 오른쪽 실시간 미리보기
+    this.splitViewElement = document.createElement('div');
+    this.splitViewElement.className = 'viewer-page__split-view';
+
+    const leftPanel = document.createElement('div');
+    leftPanel.className = 'viewer-page__split-editor';
+
+    const rightPanel = document.createElement('div');
+    rightPanel.className = 'viewer-page__split-preview';
+    const previewLabel = document.createElement('div');
+    previewLabel.className = 'viewer-page__split-preview-label';
+    previewLabel.setAttribute('aria-hidden', 'true');
+    previewLabel.textContent = '미리보기';
+    rightPanel.appendChild(previewLabel);
+    // 렌더러를 오른쪽 패널로 이동 (편집 중 실시간 미리보기)
+    this.contentArea.appendChild(this.splitViewElement);
+    this.splitViewElement.appendChild(leftPanel);
+    this.splitViewElement.appendChild(rightPanel);
+    rightPanel.appendChild(this.rendererWrapper);
+
+    const editorContainer = document.createElement('div');
+    editorContainer.className = 'viewer-page__editor viewer-page__editor--split';
+    leftPanel.appendChild(editorContainer);
+
     this.editor = new Editor(editorContainer, {
       onContentChange: (newContent) => {
-        // 자동 저장 관리자에 변경사항 전달
         if (this.autoSaveManager) {
           this.autoSaveManager.onContentChange(newContent);
         }
+        // 오른쪽 패널에 편집 내용 실시간 반영
+        this.markdownRenderer.render(newContent);
       },
       onSave: () => this.handleSave({ encrypt: false }),
       onClose: () => this.exitEditMode(),
@@ -609,15 +676,24 @@ export class ViewerPage {
 
     this.editor.setContent(content);
     this.editor.setFileName(this.currentFile.name);
+    editorContainer.classList.add('editor--split'); // 분할 뷰 시 전체 화면 오버레이 비활성화
     this.editor.focus();
 
-    // 자동 저장 관리자 시작 (로컬 파일 모드가 아닐 때만)
+    // 초기 미리보기 표시
+    this.markdownRenderer.render(content);
+
+    // 에디터·미리보기 스크롤 비율 동기화
+    const editorTextarea = editorContainer.querySelector('.editor__textarea') as HTMLTextAreaElement | null;
+    if (editorTextarea) {
+      this.scrollSyncUnsubscribe = this.setupScrollSync(editorTextarea, this.rendererWrapper);
+    }
+
     if (!this.isLocalFileMode) {
       this.autoSaveManager = new AutoSaveManager(
         {
           enabled: true,
-          interval: 180, // 3분
-          minChanges: 10, // 10번 변경 시 즉시 저장
+          interval: 180,
+          minChanges: 10,
         },
         {
           onStatusChange: (status) => {
@@ -627,9 +703,7 @@ export class ViewerPage {
               this.editor.setSaveStatus(status);
             }
           },
-          onSaveSuccess: () => {
-            // 자동 저장 성공 (조용히 처리)
-          },
+          onSaveSuccess: () => {},
           onSaveError: (error) => {
             console.error('Auto save error:', error);
             Toast.error('자동 저장에 실패했습니다.');
@@ -638,12 +712,6 @@ export class ViewerPage {
       );
       this.autoSaveManager.start(this.currentFile.path, content);
     }
-
-    // 마크다운 렌더러 숨기기
-    const rendererContainer = this.markdownRenderer.getElement().parentElement;
-    if (rendererContainer) {
-      rendererContainer.style.display = 'none';
-    }
   }
 
   private exitEditMode(): void {
@@ -651,25 +719,28 @@ export class ViewerPage {
       return;
     }
 
-    // 자동 저장 중지
     if (this.autoSaveManager) {
       this.autoSaveManager.stop();
       this.autoSaveManager = null;
     }
-    
-    // 에디터 제거
+
+    if (this.scrollSyncUnsubscribe) {
+      this.scrollSyncUnsubscribe();
+      this.scrollSyncUnsubscribe = null;
+    }
+
     if (this.editor) {
       this.editor.destroy();
       this.editor = null;
     }
 
-    // 마크다운 렌더러 다시 표시
-    const rendererContainer = this.markdownRenderer.getElement().parentElement;
-    if (rendererContainer) {
-      rendererContainer.style.display = 'block';
+    // 분할 뷰 제거, 렌더러를 본래 위치(contentArea)로 복원
+    if (this.splitViewElement) {
+      this.contentArea.appendChild(this.rendererWrapper);
+      this.splitViewElement.remove();
+      this.splitViewElement = null;
     }
 
-    // 현재 파일 다시 로드하여 최신 내용 표시
     if (this.currentFile) {
       this.loadFile(this.currentFile.path);
     }

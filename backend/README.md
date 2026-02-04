@@ -95,7 +95,7 @@ src/main/java/com/markdownviewer/
 
 ## 참고 문서
 
-- [시스템 아키텍처](../01_SYSTEM_ARCHITECTURE.md)
-- [API 명세서](../03_API_SPECIFICATION.md)
-- [데이터베이스 설계](../04_DATABASE_DESIGN.md)
-- [코딩 규약](../12_CODING_CONVENTIONS.md)
+- [시스템 아키텍처](../docs/design/01_SYSTEM_ARCHITECTURE.md)
+- [API 명세서](../docs/design/03_API_SPECIFICATION.md)
+- [데이터베이스 설계](../docs/design/04_DATABASE_DESIGN.md)
+- [코딩 규약](../docs/infra-dev/12_CODING_CONVENTIONS.md)

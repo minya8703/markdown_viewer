@@ -12,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -182,6 +185,58 @@ public class FileService {
         }
     }
 
+    /** DoD 5220.22-M 스타일 3회 덮어쓰기: 문자 → 보수 → 랜덤 (FR-4.3) */
+    private void secureOverwriteDoD(Path fullPath, long fileSize) throws IOException {
+        int bufSize = (int) Math.min(256 * 1024, fileSize > 0 ? fileSize : 256 * 1024); // 256KB 청크
+        if (bufSize <= 0) {
+            return;
+        }
+        byte[] zero = new byte[bufSize]; // 0x00
+        byte[] ones = new byte[bufSize];  // 0xFF
+        for (int i = 0; i < ones.length; i++) {
+            ones[i] = (byte) 0xFF;
+        }
+        byte[] random = new byte[bufSize];
+        SecureRandom rng = new SecureRandom();
+
+        try (FileChannel ch = FileChannel.open(fullPath, StandardOpenOption.WRITE)) {
+            long remaining = fileSize;
+            long pos = 0;
+
+            // Pass 1: 0x00
+            while (remaining > 0) {
+                int toWrite = (int) Math.min(bufSize, remaining);
+                ch.write(ByteBuffer.wrap(zero, 0, toWrite), pos);
+                pos += toWrite;
+                remaining -= toWrite;
+            }
+            ch.force(true);
+
+            // Pass 2: 0xFF
+            remaining = fileSize;
+            pos = 0;
+            while (remaining > 0) {
+                int toWrite = (int) Math.min(bufSize, remaining);
+                ch.write(ByteBuffer.wrap(ones, 0, toWrite), pos);
+                pos += toWrite;
+                remaining -= toWrite;
+            }
+            ch.force(true);
+
+            // Pass 3: random
+            remaining = fileSize;
+            pos = 0;
+            while (remaining > 0) {
+                int toWrite = (int) Math.min(bufSize, remaining);
+                rng.nextBytes(random);
+                ch.write(ByteBuffer.wrap(random, 0, toWrite), pos);
+                pos += toWrite;
+                remaining -= toWrite;
+            }
+            ch.force(true);
+        }
+    }
+
     @Transactional
     public boolean deleteFile(User user, String filePath, boolean secure) {
         String path = sanitizePath(filePath);
@@ -194,10 +249,12 @@ public class FileService {
         try {
             if (Files.exists(fullPath)) {
                 if (secure) {
-                    Files.write(fullPath, new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
-                    byte[] random = new byte[(int) Math.min(meta.getFileSize() != null ? meta.getFileSize() : 0, 1024 * 1024)];
-                    new java.security.SecureRandom().nextBytes(random);
-                    Files.write(fullPath, random, StandardOpenOption.TRUNCATE_EXISTING);
+                    long size = meta.getFileSize() != null ? meta.getFileSize() : 0L;
+                    long actualSize = Files.size(fullPath);
+                    long sizeToWipe = Math.max(size, actualSize);
+                    if (sizeToWipe > 0) {
+                        secureOverwriteDoD(fullPath, sizeToWipe);
+                    }
                 }
                 Files.delete(fullPath);
             }

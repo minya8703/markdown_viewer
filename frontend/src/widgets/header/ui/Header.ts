@@ -7,7 +7,24 @@
  */
 
 import { IconButton } from '@shared/ui/IconButton';
+import { getStoredTheme, saveStoredTheme, type ThemeMode } from '@shared/lib/theme';
 import './Header.css';
+
+const THEME_CYCLE: ThemeMode[] = ['light', 'dark', 'auto'];
+function nextTheme(current: ThemeMode): ThemeMode {
+  const i = THEME_CYCLE.indexOf(current);
+  return THEME_CYCLE[(i + 1) % THEME_CYCLE.length];
+}
+function themeIcon(theme: ThemeMode): string {
+  if (theme === 'light') return 'fas fa-sun';
+  if (theme === 'dark') return 'fas fa-moon';
+  return 'fas fa-circle-half-stroke';
+}
+function themeAriaLabel(theme: ThemeMode): string {
+  if (theme === 'light') return '밝은 테마 (클릭 시 어두운 테마)';
+  if (theme === 'dark') return '어두운 테마 (클릭 시 자동 테마)';
+  return '자동 테마 (클릭 시 밝은 테마)';
+}
 
 export interface HeaderProps {
   fileName?: string;
@@ -42,6 +59,7 @@ export class Header {
   private saveStatusElement: HTMLElement | null = null; // 편집 모드일 때만 생성
   private viewActionsWrap: HTMLElement | null = null; // 뷰 모드 액션 (편집 버튼)
   private editActionsWrap: HTMLElement | null = null; // 편집 모드 액션 (저장, 암호화, 상태)
+  private themeButton: IconButton | null = null; // 테마 전환 버튼
 
   constructor(props: HeaderProps) {
     this.element = document.createElement('header');
@@ -181,6 +199,22 @@ export class Header {
     buttonContainer.appendChild(this.editActionsWrap);
 
     this.setEditMode(isEditMode);
+
+    // 테마 전환 버튼 (밝음 → 어둠 → 자동 → 밝음 순환)
+    const currentTheme = getStoredTheme();
+    this.themeButton = new IconButton({
+      icon: themeIcon(currentTheme),
+      ariaLabel: themeAriaLabel(currentTheme),
+      onClick: () => {
+        const next = nextTheme(getStoredTheme());
+        saveStoredTheme(next);
+        if (this.themeButton) {
+          this.themeButton.setIcon(themeIcon(next));
+          this.themeButton.setAriaLabel(themeAriaLabel(next));
+        }
+      },
+    });
+    buttonContainer.appendChild(this.themeButton.getElement());
 
     // 설정 버튼
     this.settingsButton = new IconButton({

@@ -4,7 +4,7 @@
 - **프로젝트**: 마크다운 뷰어 V2
 - **버전**: 1.0
 - **작성일**: 2026-01-29
-- **기반 문서**: SYSTEM_ARCHITECTURE.md
+- **기반 문서**: [01_SYSTEM_ARCHITECTURE.md](../design/01_SYSTEM_ARCHITECTURE.md)
 
 ## 목차
 1. [개요](#개요)
@@ -778,7 +778,7 @@ logging:
 - 에러율 5% 초과
 - 응답 시간 p95가 2초 초과
 
-**자세한 내용은 [Spring 모니터링 가이드](./09_SPRING_MONITORING.md) 참고**
+**자세한 내용은 [Spring 모니터링 가이드](../infra-dev/09_SPRING_MONITORING.md) 참고**
 
 ---
 
