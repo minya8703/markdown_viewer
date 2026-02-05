@@ -2,10 +2,10 @@
  * 메인 애플리케이션 클래스
  * 애플리케이션 진입점 및 라우팅 관리
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - 전체 시스템 아키텍처, 프론트엔드 구조
- * @see 02_REQUIREMENTS.md - FR-1 (인증), FR-5.3 (백그라운드 업데이트 방지)
- * @see 05_UI_UX_DESIGN.md - 사용자 흐름 (로그인 흐름, 파일 열기 흐름)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처, TypeScript 코딩 규약
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - 전체 시스템 아키텍처, 프론트엔드 구조
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-1 (인증), FR-5.3 (백그라운드 업데이트 방지)
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 사용자 흐름 (로그인 흐름, 파일 열기 흐름)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처, TypeScript 코딩 규약
  */
 
 import { initTheme } from '@shared/lib/theme';

@@ -1,6 +1,7 @@
 package com.markdownviewer.controller;
 
 import com.markdownviewer.service.AuthService;
+import com.markdownviewer.service.JwtBlacklistService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ class HealthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private JwtBlacklistService jwtBlacklistService;
 
     @Test
     @DisplayName("GET /health - 200 및 status UP 반환")

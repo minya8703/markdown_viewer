@@ -2,9 +2,9 @@
  * 마크다운 렌더러
  * 클라이언트 사이드에서 마크다운을 HTML로 변환 (XSS 방지: DOMPurify 적용)
  *
- * @see 02_REQUIREMENTS.md - FR-2.1 (마크다운 뷰어)
- * @see 03_API_SPECIFICATION.md - 마크다운 처리 API
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-2.1 (마크다운 뷰어)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 마크다운 처리 API
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
  * @see docs/project/SECURITY_CHECKLIST.md - 마크다운 XSS 방지
  */
 

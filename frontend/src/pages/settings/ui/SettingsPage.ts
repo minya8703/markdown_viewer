@@ -2,9 +2,9 @@
  * Settings 페이지
  * 애플리케이션 설정 관리 페이지
  * 
- * @see 02_REQUIREMENTS.md - FR-5 (사용자 경험), 설정 관련 요구사항
- * @see 05_UI_UX_DESIGN.md - 설정 화면 UI 설계
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (pages 레이어), TypeScript 코딩 규약
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-5 (사용자 경험), 설정 관련 요구사항
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 설정 화면 UI 설계
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (pages 레이어), TypeScript 코딩 규약
  */
 
 import { applyTheme } from '@shared/lib/theme';

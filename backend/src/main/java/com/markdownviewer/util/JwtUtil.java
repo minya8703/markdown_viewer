@@ -18,8 +18,8 @@ import java.util.function.Function;
  * JWT 유틸리티 클래스
  * JWT 토큰 생성 및 검증
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - JWT 토큰 발급 및 검증
- * @see 12_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (유틸리티)
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - JWT 토큰 발급 및 검증
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (유틸리티)
  */
 @Component
 @RequiredArgsConstructor

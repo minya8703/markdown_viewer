@@ -4,7 +4,6 @@ import com.markdownviewer.dto.response.ApiResponse;
 import com.markdownviewer.dto.response.AuthResponse;
 import com.markdownviewer.entity.User;
 import com.markdownviewer.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +19,9 @@ import java.util.Map;
  * 인증 컨트롤러
  * Google OAuth 로그인 처리
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - AuthController 상세 설계
- * @see 03_API_SPECIFICATION.md - 인증 API 엔드포인트 명세
- * @see 12_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (Controller)
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - AuthController 상세 설계
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 인증 API 엔드포인트 명세
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (Controller)
  */
 @RestController
 @RequestMapping("/auth")
@@ -106,11 +105,16 @@ public class AuthController {
     /**
      * 로그아웃
      * POST /api/auth/logout
+     * Authorization: Bearer &lt;token&gt; 으로 전달된 토큰을 블랙리스트에 등록하여 만료 시점까지 재사용 불가
      */
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout() {
-        // JWT는 stateless이므로 서버 측에서 별도 처리 불필요
-        // 클라이언트에서 토큰 삭제만 하면 됨
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    ) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.replace("Bearer ", "").trim();
+            authService.logout(token);
+        }
         return ResponseEntity.ok(ApiResponse.success(null, "로그아웃되었습니다."));
     }
 }

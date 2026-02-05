@@ -534,7 +534,7 @@
 - 서비스 간 통신: REST API (동기) + Message Queue (비동기)
 - 서비스 디스커버리: Kubernetes Service 또는 Eureka
 
-**자세한 내용은 [MSA 아키텍처 가이드](./10_MSA_ARCHITECTURE.md) 참고**
+**자세한 내용은 [MSA 아키텍처 가이드](../60_infra/62_MSA_ARCHITECTURE.md) 참고**
 
 ---
 

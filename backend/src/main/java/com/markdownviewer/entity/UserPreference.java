@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 /**
  * 사용자 설정 엔티티
- * @see 04_DATABASE_DESIGN.md - user_preferences 테이블 설계
+ * @see docs/30_db/30_DATABASE_DESIGN.md - user_preferences 테이블 설계
  */
 @Entity
 @Table(name = "user_preferences", uniqueConstraints = {

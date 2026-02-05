@@ -21,7 +21,7 @@ import java.util.Optional;
 
 /**
  * 사용자 API 컨트롤러 (마지막 문서 등)
- * @see 03_API_SPECIFICATION.md - GET /api/users/me/last-document
+ * @see docs/20_backend/20_API_SPECIFICATION.md - GET /api/users/me/last-document
  */
 @RestController
 @RequestMapping("/users/me")

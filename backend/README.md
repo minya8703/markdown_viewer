@@ -6,18 +6,20 @@
 
 ## 기술 스택
 
-- **Java**: 17
+- **Java**: 21
 - **Spring Boot**: 3.2.0
-- **Spring Security**: OAuth2 Client
+- **Spring Security**: OAuth2 Client (Google), JWT
 - **JWT**: jjwt 0.12.3
-- **Database**: MariaDB
-- **Build Tool**: Gradle
+- **Database**: MariaDB (JPA)
+- **캐시/선택**: Spring Cache, Redis(선택 시 JWT 블랙리스트·메타데이터 캐시)
+- **모니터링**: Actuator, Micrometer, Prometheus
+- **Build**: Gradle
 
 ## 시작하기
 
 ### 필수 요구사항
 
-- Java 17 이상
+- Java 21 이상
 - MariaDB 10.11 이상
 - Google OAuth2 클라이언트 ID 및 Secret
 
@@ -25,7 +27,7 @@
 
 Google OAuth2를 사용하기 위해 Google Cloud Console에서 클라이언트를 생성해야 합니다.
 
-**자세한 설정 방법은 [13_BACKEND_ENVIRONMENT_SETUP.md](../13_BACKEND_ENVIRONMENT_SETUP.md)를 참고하세요.**
+**자세한 설정 방법은 [00_BACKEND_ENVIRONMENT_SETUP.md](../docs/00_environment/00_BACKEND_ENVIRONMENT_SETUP.md)를 참고하세요.** 빠른 설정은 [SETUP_GUIDE.md](SETUP_GUIDE.md)를 참고하세요.
 
 ### 환경 변수 설정
 
@@ -95,7 +97,11 @@ src/main/java/com/markdownviewer/
 
 ## 참고 문서
 
-- [시스템 아키텍처](../docs/design/01_SYSTEM_ARCHITECTURE.md)
-- [API 명세서](../docs/design/03_API_SPECIFICATION.md)
-- [데이터베이스 설계](../docs/design/04_DATABASE_DESIGN.md)
-- [코딩 규약](../docs/infra-dev/12_CODING_CONVENTIONS.md)
+- [SETUP_GUIDE.md](SETUP_GUIDE.md) — OAuth·JWT·Redis 등 초기 설정
+- [DATABASE_SETUP.md](DATABASE_SETUP.md) — DB 설치·스키마
+- [시스템 아키텍처](../docs/10_design/10_SYSTEM_ARCHITECTURE.md)
+- [API 명세서](../docs/20_backend/20_API_SPECIFICATION.md)
+- [데이터베이스 설계](../docs/30_db/30_DATABASE_DESIGN.md)
+- [Redis 사용 정리](../docs/00_environment/01_REDIS_GUIDE.md) — Redis 용도·설정·미사용 시 동작
+- [코딩 규약](../docs/40_frontend/41_CODING_CONVENTIONS.md)
+- [문서 목차](../docs/README.md)

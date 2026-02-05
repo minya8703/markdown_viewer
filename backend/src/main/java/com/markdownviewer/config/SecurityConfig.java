@@ -30,8 +30,8 @@ import java.util.Map;
  * Spring Security 설정
  * OAuth2 및 JWT 인증 설정
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - SecurityConfig 상세 설계
- * @see 12_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (Configuration)
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - SecurityConfig 상세 설계
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (Configuration)
  */
 @Configuration
 @EnableWebSecurity

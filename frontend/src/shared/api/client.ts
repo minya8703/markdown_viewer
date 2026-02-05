@@ -2,9 +2,9 @@
  * API 클라이언트
  * 백엔드 API와 통신하는 공유 모듈
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - 프론트엔드-백엔드 통신 구조
- * @see 03_API_SPECIFICATION.md - API 엔드포인트 명세, 인증 방식 (JWT)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared 레이어), API 클라이언트 패턴
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - 프론트엔드-백엔드 통신 구조
+ * @see docs/20_backend/20_API_SPECIFICATION.md - API 엔드포인트 명세, 인증 방식 (JWT)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (shared 레이어), API 클라이언트 패턴
  */
 
 import type { ApiResponse, FileMetadata } from '../types';

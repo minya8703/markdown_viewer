@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * 헬스 체크 컨트롤러
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - HealthController 상세 설계
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - HealthController 상세 설계
  */
 @RestController
 @RequestMapping("/health")

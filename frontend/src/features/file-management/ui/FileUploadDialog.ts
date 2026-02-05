@@ -1,10 +1,10 @@
 /**
  * 파일 업로드 다이얼로그 컴포넌트
  * 
- * @see 02_REQUIREMENTS.md - FR-2.2 (파일 업로드)
- * @see 03_API_SPECIFICATION.md - 파일 업로드 API 엔드포인트
- * @see 05_UI_UX_DESIGN.md - 파일 업로드 UI/UX
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-2.2 (파일 업로드)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 파일 업로드 API 엔드포인트
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 파일 업로드 UI/UX
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
  */
 
 import { Button } from '@shared/ui/Button';

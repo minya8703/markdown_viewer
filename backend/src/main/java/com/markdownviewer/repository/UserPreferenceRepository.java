@@ -8,7 +8,7 @@ import java.util.Optional;
 
 /**
  * 사용자 설정 Repository
- * @see 04_DATABASE_DESIGN.md - user_preferences 테이블
+ * @see docs/30_db/30_DATABASE_DESIGN.md - user_preferences 테이블
  */
 public interface UserPreferenceRepository extends JpaRepository<UserPreference, Long> {
 

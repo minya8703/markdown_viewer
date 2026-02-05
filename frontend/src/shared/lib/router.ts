@@ -2,8 +2,8 @@
  * 간단한 라우터 구현
  * 향후 필요시 라우터 라이브러리로 교체 가능
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - 프론트엔드 아키텍처, 라우팅 구조
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/lib 레이어)
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - 프론트엔드 아키텍처, 라우팅 구조
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/lib 레이어)
  */
 
 type RouteHandler = (container: HTMLElement) => void;

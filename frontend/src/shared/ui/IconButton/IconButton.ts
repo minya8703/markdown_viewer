@@ -2,9 +2,9 @@
  * 아이콘 전용 버튼 컴포넌트
  * Font Awesome 아이콘을 사용하는 버튼
  * 
- * @see 02_REQUIREMENTS.md - FR-5.4 (직관적인 아이콘 기반 UI)
- * @see 05_UI_UX_DESIGN.md - 아이콘 매핑, 접근성 가이드라인
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/ui 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-5.4 (직관적인 아이콘 기반 UI)
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 아이콘 매핑, 접근성 가이드라인
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/ui 레이어)
  */
 
 import './IconButton.css';

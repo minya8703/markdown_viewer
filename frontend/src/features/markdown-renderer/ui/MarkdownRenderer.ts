@@ -2,9 +2,9 @@
  * 마크다운 렌더러 컴포넌트
  * 마크다운 텍스트를 HTML로 변환하여 렌더링
  * 
- * @see 02_REQUIREMENTS.md - FR-2.1 (마크다운 뷰어 기능)
- * @see 03_API_SPECIFICATION.md - 마크다운 처리 API (render, detect)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-2.1 (마크다운 뷰어 기능)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 마크다운 처리 API (render, detect)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features 레이어)
  */
 
 import { renderMarkdown } from '../lib/markdown';

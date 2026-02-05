@@ -1,10 +1,10 @@
 /**
  * 파일 삭제 확인 다이얼로그 컴포넌트
  * 
- * @see 02_REQUIREMENTS.md - FR-2.4 (파일 삭제), FR-4.3 (안전한 파일 삭제)
- * @see 03_API_SPECIFICATION.md - 파일 삭제 API 엔드포인트
- * @see 05_UI_UX_DESIGN.md - 파일 삭제 UI/UX
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-2.4 (파일 삭제), FR-4.3 (안전한 파일 삭제)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 파일 삭제 API 엔드포인트
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 파일 삭제 UI/UX
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
  */
 
 import { Button } from '@shared/ui/Button';

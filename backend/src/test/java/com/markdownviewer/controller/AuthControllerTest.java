@@ -4,6 +4,7 @@ import com.markdownviewer.dto.response.ApiResponse;
 import com.markdownviewer.dto.response.AuthResponse;
 import com.markdownviewer.entity.User;
 import com.markdownviewer.service.AuthService;
+import com.markdownviewer.service.JwtBlacklistService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,9 @@ class AuthControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private JwtBlacklistService jwtBlacklistService;
 
     @Test
     @DisplayName("GET /auth/me - Authorization 헤더 없으면 401")

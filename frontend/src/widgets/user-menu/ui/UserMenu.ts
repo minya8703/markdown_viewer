@@ -2,9 +2,9 @@
  * 사용자 메뉴 컴포넌트
  * 사용자 프로필 및 로그아웃 메뉴
  * 
- * @see 02_REQUIREMENTS.md - FR-1.1 (Google 로그인), FR-1.2 (사용자별 폴더 관리)
- * @see 05_UI_UX_DESIGN.md - 사용자 메뉴 UI 설계
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어), TypeScript 코딩 규약
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-1.1 (Google 로그인), FR-1.2 (사용자별 폴더 관리)
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 사용자 메뉴 UI 설계
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어), TypeScript 코딩 규약
  */
 
 import { logout } from '@features/auth';

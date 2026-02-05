@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 파일 저장 요청 DTO
- * @see 03_API_SPECIFICATION.md - POST /api/files/{path}
+ * @see docs/20_backend/20_API_SPECIFICATION.md - POST /api/files/{path}
  */
 @Data
 @Builder

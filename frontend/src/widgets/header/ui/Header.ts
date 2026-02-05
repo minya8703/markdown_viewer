@@ -2,8 +2,8 @@
  * Header 위젯
  * 상단 고정 헤더 컴포넌트
  * 
- * @see 05_UI_UX_DESIGN.md - Header 컴포넌트 설계, 아이콘 매핑
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어), CSS 스타일 규약
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - Header 컴포넌트 설계, 아이콘 매핑
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어), CSS 스타일 규약
  */
 
 import { IconButton } from '@shared/ui/IconButton';

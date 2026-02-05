@@ -65,7 +65,7 @@
 - **이유**: 고급 기능 필요 시 (JSON 타입, Full-Text Search 등)
 - **용도**: 복잡한 쿼리 및 분석이 필요한 경우
 
-**자세한 내용은 [RDBMS 선택 가이드](./11_RDBMS_RECOMMENDATION.md) 참고**
+**자세한 내용은 [RDBMS 선택 가이드](31_RDBMS_RECOMMENDATION.md) 참고**
 
 ---
 

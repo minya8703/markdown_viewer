@@ -54,8 +54,8 @@
 
 | 파일 | 설명 |
 |------|------|
-| `docs/deployment/DEPLOYMENT_PLAN.md` | NAS 배포 계획·Phase·체크리스트 |
-| `docs/deployment/SSL_HTTPS_SETUP.md` | SSL/HTTPS 설정·인증서 자동 갱신 |
+| `docs/50_deployment/DEPLOYMENT_PLAN.md` | NAS 배포 계획·Phase·체크리스트 |
+| `docs/50_deployment/SSL_HTTPS_SETUP.md` | SSL/HTTPS 설정·인증서 자동 갱신 |
 
 이 파일들은 로컬에서 편집·보관하고, clone 시에는 포함되지 않습니다.
 

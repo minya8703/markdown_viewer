@@ -2,9 +2,9 @@
  * 파일 관리 서비스
  * 파일 CRUD 작업을 위한 API 클라이언트 래퍼
  * 
- * @see 02_REQUIREMENTS.md - FR-2 (파일 관리 기능 요구사항)
- * @see 03_API_SPECIFICATION.md - 파일 관리 API 엔드포인트 상세 명세
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어), API 클라이언트 패턴
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-2 (파일 관리 기능 요구사항)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 파일 관리 API 엔드포인트 상세 명세
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어), API 클라이언트 패턴
  */
 
 import { apiClient } from '@shared/api/client';

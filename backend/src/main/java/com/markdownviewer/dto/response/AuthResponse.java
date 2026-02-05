@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 /**
  * 인증 응답 DTO
  * 
- * @see 03_API_SPECIFICATION.md - 인증 API 응답 형식
- * @see 12_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (DTO)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 인증 API 응답 형식
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (DTO)
  */
 @Data
 @Builder

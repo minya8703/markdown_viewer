@@ -112,4 +112,4 @@ spring:
 
 ## 추가 도움말
 
-자세한 설정 방법은 [13_BACKEND_ENVIRONMENT_SETUP.md](../13_BACKEND_ENVIRONMENT_SETUP.md)를 참고하세요.
+자세한 설정 방법은 [00_BACKEND_ENVIRONMENT_SETUP.md](../docs/00_environment/00_BACKEND_ENVIRONMENT_SETUP.md)를 참고하세요.

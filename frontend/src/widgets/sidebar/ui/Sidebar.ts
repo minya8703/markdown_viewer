@@ -2,8 +2,8 @@
  * Sidebar 위젯
  * 파일 탐색기 사이드바 컴포넌트
  * 
- * @see 05_UI_UX_DESIGN.md - Sidebar 컴포넌트 설계, 파일 탐색 UI
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어), CSS 스타일 규약
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - Sidebar 컴포넌트 설계, 파일 탐색 UI
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어), CSS 스타일 규약
  */
 
 import { Button } from '@shared/ui/Button';

@@ -2,8 +2,8 @@
  * 공유 Button 컴포넌트
  * 재사용 가능한 버튼 UI 컴포넌트
  * 
- * @see 05_UI_UX_DESIGN.md - 버튼 컴포넌트 설계
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/ui 레이어), 컴포넌트 네이밍 규약
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 버튼 컴포넌트 설계
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/ui 레이어), 컴포넌트 네이밍 규약
  */
 
 import './Button.css';

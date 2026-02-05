@@ -2,9 +2,9 @@
  * 인증 관련 기능
  * 사용자 인증, 사용자 정보 관리, 토큰 관리
  * 
- * @see 02_REQUIREMENTS.md - FR-1 (인증 및 사용자 관리)
- * @see 03_API_SPECIFICATION.md - 인증 API 엔드포인트 명세
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-1 (인증 및 사용자 관리)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 인증 API 엔드포인트 명세
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
  */
 
 import { apiClient, TokenManager } from '@shared/api/client';

@@ -19,6 +19,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -36,6 +38,9 @@ class AuthServiceTest {
 
     @Mock
     private JwtProperties jwtProperties;
+
+    @Mock
+    private JwtBlacklistService jwtBlacklistService;
 
     @InjectMocks
     private AuthService authService;
@@ -130,5 +135,22 @@ class AuthServiceTest {
         assertThat(result.getName()).isEqualTo("New Name");
         assertThat(result.getPictureUrl()).isEqualTo("https://pic.url");
         verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("logout - 유효한 토큰이면 블랙리스트에 추가")
+    void logout_validToken_addsToBlacklist() {
+        String token = authService.generateToken(1L);
+        authService.logout(token);
+        verify(jwtBlacklistService).add(eq(token), org.mockito.ArgumentMatchers.anyLong());
+    }
+
+    @Test
+    @DisplayName("logout - null/빈 토큰이면 블랙리스트에 추가하지 않음")
+    void logout_nullOrBlank_doesNotAdd() {
+        authService.logout(null);
+        authService.logout("");
+        authService.logout("   ");
+        verify(jwtBlacklistService, never()).add(any(), anyLong());
     }
 }

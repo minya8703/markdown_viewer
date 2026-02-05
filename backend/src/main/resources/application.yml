@@ -38,12 +38,22 @@ spring:
             user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
             user-name-attribute: sub
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cache:
+    type: ${CACHE_TYPE:simple}
+  # Redis 미사용 시 기본 제외. Redis 사용 시 env SPRING_AUTOCONFIGURE_EXCLUDE= (빈 값) 및 REDIS_ENABLED=true
+  autoconfigure:
+    exclude: ${SPRING_AUTOCONFIGURE_EXCLUDE:org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration}
+
 server:
   port: 8080
   servlet:
     context-path: /api
   # 리버스 프록시(Nginx 등) 뒤에서 HTTPS로 접속된 요청 인식 (X-Forwarded-Proto 등)
-  # @see docs/deployment/SSL_HTTPS_SETUP.md
+  # @see docs/50_deployment/SSL_HTTPS_SETUP.md
   forward-headers-strategy: framework
 
 jwt:
@@ -53,3 +63,32 @@ jwt:
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
   file-storage-base-path: ${FILE_STORAGE_BASE_PATH:./data}
+  # Redis 사용 시 프로필 redis 활성화. 미사용 시 RedisAutoConfiguration 제외 권장 (env: SPRING_AUTOCONFIGURE_EXCLUDE=...)
+  redis:
+    enabled: ${REDIS_ENABLED:false}
+  cache:
+    type: ${CACHE_TYPE:simple}  # simple | redis (redis 프로필 시 redis 사용)
+
+# Actuator + Prometheus (헬스·메트릭·API 응답시간)
+# Spring Boot 3.2: prometheus는 management.prometheus.metrics.export, 공통 태그는 management.observations.key-values 사용
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  observations:
+    key-values:
+      application: ${spring.application.name}
+  health:
+    redis:
+      enabled: ${REDIS_ENABLED:false}

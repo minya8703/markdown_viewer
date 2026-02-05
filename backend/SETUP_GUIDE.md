@@ -71,6 +71,12 @@ JWT Secret이 없다면 다음 명령어로 생성:
    http://localhost:8080/api/auth/google/login
    ```
 
+## Redis (선택)
+
+- Redis는 **파일 업로드/저장에는 사용하지 않습니다.** JWT 로그아웃 블랙리스트와 파일 메타데이터 캐시용입니다.
+- 단일 인스턴스·개발 환경에서는 설정하지 않아도 됩니다(인메모리로 동작).
+- Redis 사용 시: `REDIS_ENABLED=true`, `REDIS_HOST`, `REDIS_PORT` 설정. 자세한 내용은 [docs/00_environment/01_REDIS_GUIDE.md](../docs/00_environment/01_REDIS_GUIDE.md) 참고.
+
 ## 자세한 내용
 
-더 자세한 설정 방법은 [13_BACKEND_ENVIRONMENT_SETUP.md](../13_BACKEND_ENVIRONMENT_SETUP.md)를 참고하세요.
+더 자세한 설정 방법은 [00_BACKEND_ENVIRONMENT_SETUP.md](../docs/00_environment/00_BACKEND_ENVIRONMENT_SETUP.md)를 참고하세요.

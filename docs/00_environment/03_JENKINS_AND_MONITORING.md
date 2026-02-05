@@ -53,16 +53,16 @@ cd backend && ./gradlew test --no-daemon && cd ..
 
 ## 3. 모니터링 방법 요약
 
-프로젝트 설계 문서 기준으로 적용 순서를 정리한 것입니다. 상세는 [09_SPRING_MONITORING.md](09_SPRING_MONITORING.md), [06_DEPLOYMENT_GUIDE.md](../deployment/06_DEPLOYMENT_GUIDE.md)를 참고하세요.
+프로젝트 설계 문서 기준으로 적용 순서를 정리한 것입니다. 상세는 [61_SPRING_MONITORING.md](../60_infra/61_SPRING_MONITORING.md), [50_DEPLOYMENT_GUIDE.md](../50_deployment/50_DEPLOYMENT_GUIDE.md)를 참고하세요.
 
 ### 3.1 단계별 도입
 
 | 단계 | 도구 | 용도 | 참고 문서 |
 |------|------|------|-----------|
-| 1 | **Spring Boot Actuator** | 헬스체크, 기본 메트릭 노출 | 09_SPRING_MONITORING.md |
-| 2 | **Prometheus** | 메트릭 수집·저장 | [06_DEPLOYMENT_GUIDE.md](../deployment/06_DEPLOYMENT_GUIDE.md), [07_KUBERNETES_DEPLOYMENT.md](../deployment/07_KUBERNETES_DEPLOYMENT.md) |
-| 3 | **Grafana** | 대시보드·그래프·알림 | 09_SPRING_MONITORING.md |
-| 4 | **ELK / 로그 수집** | 로그 중앙화·검색 (선택) | [01_SYSTEM_ARCHITECTURE.md](../design/01_SYSTEM_ARCHITECTURE.md) |
+| 1 | **Spring Boot Actuator** | 헬스체크, 기본 메트릭 노출 | 61_SPRING_MONITORING.md |
+| 2 | **Prometheus** | 메트릭 수집·저장 | [50_DEPLOYMENT_GUIDE.md](../50_deployment/50_DEPLOYMENT_GUIDE.md), [51_KUBERNETES_DEPLOYMENT.md](../50_deployment/51_KUBERNETES_DEPLOYMENT.md) |
+| 3 | **Grafana** | 대시보드·그래프·알림 | 61_SPRING_MONITORING.md |
+| 4 | **ELK / 로그 수집** | 로그 중앙화·검색 (선택) | [10_SYSTEM_ARCHITECTURE.md](../10_design/10_SYSTEM_ARCHITECTURE.md) |
 
 ### 3.2 백엔드 모니터링 (Spring Boot)
 
@@ -108,7 +108,7 @@ cd backend && ./gradlew test --no-daemon && cd ..
 
 - Prometheus를 Grafana 데이터 소스로 추가
 - Spring Boot 메트릭으로 대시보드 생성 (JVM, HTTP 등)
-- 자세한 설정·예시: **09_SPRING_MONITORING.md** 8장
+- 자세한 설정·예시: **61_SPRING_MONITORING.md** 8장
 
 ---
 
@@ -149,4 +149,4 @@ pipeline {
 
 - **Jenkins**: 테스트가 로컬에서 안정적으로 통과한 뒤 설정하는 것을 권장합니다.
 - **테스트 확인**: 프론트 `npm run test:run`, 백엔드 `./gradlew test`로 먼저 확인하세요.
-- **모니터링**: Actuator → Prometheus → Grafana 순으로 도입하고, 상세는 [09_SPRING_MONITORING.md](09_SPRING_MONITORING.md)와 [06_DEPLOYMENT_GUIDE.md](../deployment/06_DEPLOYMENT_GUIDE.md)를 참고하세요.
+- **모니터링**: Actuator → Prometheus → Grafana 순으로 도입하고, 상세는 [61_SPRING_MONITORING.md](../60_infra/61_SPRING_MONITORING.md)와 [50_DEPLOYMENT_GUIDE.md](../50_deployment/50_DEPLOYMENT_GUIDE.md)를 참고하세요.

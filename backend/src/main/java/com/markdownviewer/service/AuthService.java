@@ -3,6 +3,7 @@ package com.markdownviewer.service;
 import com.markdownviewer.config.JwtProperties;
 import com.markdownviewer.entity.User;
 import com.markdownviewer.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +29,7 @@ public class AuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2U
 
     private final UserRepository userRepository;
     private final JwtProperties jwtProperties;
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -103,5 +106,35 @@ public class AuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2U
                 .getPayload()
                 .getSubject();
         return Long.parseLong(subject);
+    }
+
+    /**
+     * JWT exp 클레임까지 남은 시간(밀리초). 이미 만료되었으면 0 또는 작은 값.
+     */
+    public long getTtlMsFromToken(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
+        Claims payload = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        Date exp = payload.getExpiration();
+        if (exp == null) return jwtProperties.getExpiration();
+        long ttlMs = exp.getTime() - System.currentTimeMillis();
+        return Math.max(ttlMs, 0);
+    }
+
+    /**
+     * 로그아웃: 해당 토큰을 블랙리스트에 넣어 만료 시점까지 재사용 불가
+     * 토큰이 유효하지 않거나 만료된 경우 무시 (200 응답 유지)
+     */
+    public void logout(String token) {
+        if (token == null || !StringUtils.hasText(token)) return;
+        try {
+            long ttlMs = getTtlMsFromToken(token);
+            jwtBlacklistService.add(token, ttlMs);
+        } catch (Exception e) {
+            log.debug("로그아웃 시 토큰 파싱 실패(무시): {}", e.getMessage());
+        }
     }
 }

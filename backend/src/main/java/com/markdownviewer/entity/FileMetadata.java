@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 /**
  * 파일 메타데이터 엔티티
- * @see 04_DATABASE_DESIGN.md - file_metadata 테이블 설계
+ * @see docs/30_db/30_DATABASE_DESIGN.md - file_metadata 테이블 설계
  */
 @Entity
 @Table(name = "file_metadata", uniqueConstraints = {

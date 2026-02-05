@@ -41,14 +41,14 @@ Google 로그인 기반의 안전하고 사용하기 편한 마크다운 뷰어 
 - **스타일**: CSS3 (Variables, Grid, Flexbox)
 - **라이브러리**: Highlight.js, Font Awesome
 
-### 백엔드 (예정)
-- **프레임워크**: Spring Boot 3.x
-- **인증**: Spring Security, JWT
-- **데이터베이스**: MariaDB 10.11 (권장) / PostgreSQL (대안)
-- **마크다운 처리**: Flexmark-java, CommonMark
-- **메시지 큐**: RabbitMQ 또는 Kafka
-- **캐싱**: Redis Cluster, Caffeine
-- **모니터링**: Prometheus, Grafana, ELK Stack
+### 백엔드
+- **프레임워크**: Spring Boot 3.2
+- **언어**: Java 21
+- **인증**: Spring Security, OAuth2(Google), JWT
+- **데이터베이스**: MariaDB (JPA)
+- **캐싱**: Spring Cache (Redis 선택 / 인메모리 기본)
+- **모니터링**: Actuator, Micrometer, Prometheus
+- **확장(선택)**: Redis(블랙리스트·캐시), MQ/Kafka(설계 문서 참고)
 
 ### 인프라
 - **컨테이너**: Docker
@@ -73,9 +73,14 @@ markdown_viewer_v2/
 │
 ├── docs/                        # 설계·배포·운영 문서 (폴더별 정리)
 │   ├── README.md                # 문서 목차
-│   ├── design/                  # 01~05, 99 (설계)
-│   ├── deployment/              # 06, 07, 배포 계획, SSL/HTTPS
-│   ├── infra-dev/               # 08~15 (인프라·개발)
+│   ├── 00_environment/          # 환경 (00~03)
+│   ├── 10_design/               # 설계 (10~11)
+│   ├── 20_backend/              # API (20)
+│   ├── 30_db/                   # DB (30~31)
+│   ├── 40_frontend/             # UI·프론트 (40~41)
+│   ├── 50_deployment/           # 배포 (50~51)
+│   ├── 60_infra/                # 인프라 (60~62)
+│   ├── 99/                      # 설계 문서 인덱스
 │   └── project/                 # 진행 현황·보안·AdSense
 ```
 
@@ -106,7 +111,7 @@ npm run build
 5. **개발자 경험**: 읽기 좋은 깔끔한 코드
 6. **크로스 브라우징**: 다양한 브라우저 및 OS 환경 지원
 
-> 💡 **코딩 규약**: 프로젝트의 코딩 스타일과 규칙은 [코딩 규약 및 스타일 가이드](docs/infra-dev/12_CODING_CONVENTIONS.md)를 참고하세요.
+> 💡 **코딩 규약**: 프로젝트의 코딩 스타일과 규칙은 [코딩 규약 및 스타일 가이드](docs/40_frontend/41_CODING_CONVENTIONS.md)를 참고하세요.
 
 ## 자동화
 
@@ -118,7 +123,7 @@ npm run build
 | **개발 서버** (백엔드+프론트) | `.\scripts\run-dev.ps1` | `./scripts/run-dev.sh` |
 
 - **CI**: GitHub에 push 시 [GitHub Actions](.github/workflows/ci.yml)가 자동으로 빌드·테스트 실행. Jenkins 사용 시 루트의 `Jenkinsfile` 사용.
-- 상세: [docs/infra-dev/14_AUTOMATION.md](docs/infra-dev/14_AUTOMATION.md), [docs/infra-dev/15_JENKINS_AND_MONITORING.md](docs/infra-dev/15_JENKINS_AND_MONITORING.md)
+- 상세: [docs/00_environment/02_AUTOMATION.md](docs/00_environment/02_AUTOMATION.md), [docs/00_environment/03_JENKINS_AND_MONITORING.md](docs/00_environment/03_JENKINS_AND_MONITORING.md)
 
 ## 문서
 
@@ -126,10 +131,10 @@ npm run build
 
 | 구분 | 문서 |
 |------|------|
-| **목차** | [docs/README.md](docs/README.md) · [설계 인덱스](docs/design/99_DESIGN_DOCUMENTS_INDEX.md) |
-| **설계** | [01 아키텍처](docs/design/01_SYSTEM_ARCHITECTURE.md) · [02 요구사항](docs/design/02_REQUIREMENTS.md) · [03 API](docs/design/03_API_SPECIFICATION.md) · [04 DB](docs/design/04_DATABASE_DESIGN.md) · [05 UI/UX](docs/design/05_UI_UX_DESIGN.md) |
-| **배포** | [06 배포 가이드](docs/deployment/06_DEPLOYMENT_GUIDE.md) · [07 Kubernetes](docs/deployment/07_KUBERNETES_DEPLOYMENT.md) *(배포 계획·SSL/HTTPS 문서는 로컬 전용, Git 제외)* |
-| **인프라·개발** | [08 MQ/Kafka](docs/infra-dev/08_MQ_KAFKA_GUIDE.md) · [09 모니터링](docs/infra-dev/09_SPRING_MONITORING.md) · [10 MSA](docs/infra-dev/10_MSA_ARCHITECTURE.md) · [11 RDBMS](docs/infra-dev/11_RDBMS_RECOMMENDATION.md) · [12 코딩 규약](docs/infra-dev/12_CODING_CONVENTIONS.md) · [13 백엔드 환경](docs/infra-dev/13_BACKEND_ENVIRONMENT_SETUP.md) · [14 자동화](docs/infra-dev/14_AUTOMATION.md) · [15 Jenkins](docs/infra-dev/15_JENKINS_AND_MONITORING.md) |
+| **목차** | [docs/README.md](docs/README.md) · [설계 인덱스](docs/99/99_DESIGN_DOCUMENTS_INDEX.md) |
+| **설계** | [10 아키텍처](docs/10_design/10_SYSTEM_ARCHITECTURE.md) · [11 요구사항](docs/10_design/11_REQUIREMENTS.md) · [20 API](docs/20_backend/20_API_SPECIFICATION.md) · [30 DB](docs/30_db/30_DATABASE_DESIGN.md) · [40 UI/UX](docs/40_frontend/40_UI_UX_DESIGN.md) |
+| **배포** | [50 배포 가이드](docs/50_deployment/50_DEPLOYMENT_GUIDE.md) · [51 Kubernetes](docs/50_deployment/51_KUBERNETES_DEPLOYMENT.md) *(배포 계획·SSL/HTTPS는 로컬 전용)* |
+| **인프라·개발** | [00 백엔드 환경](docs/00_environment/00_BACKEND_ENVIRONMENT_SETUP.md) · [01 Redis](docs/00_environment/01_REDIS_GUIDE.md) · [02 자동화](docs/00_environment/02_AUTOMATION.md) · [03 Jenkins](docs/00_environment/03_JENKINS_AND_MONITORING.md) · [31 RDBMS](docs/30_db/31_RDBMS_RECOMMENDATION.md) · [41 코딩 규약](docs/40_frontend/41_CODING_CONVENTIONS.md) · [60 MQ/Kafka](docs/60_infra/60_MQ_KAFKA_GUIDE.md) · [61 모니터링](docs/60_infra/61_SPRING_MONITORING.md) · [62 MSA](docs/60_infra/62_MSA_ARCHITECTURE.md) |
 | **기타** | [기능 진행](docs/project/FEATURE_PROGRESS.md) · [보안 체크리스트](docs/project/SECURITY_CHECKLIST.md) · [AdSense](docs/project/ADSENSE_SAFETY.md) |
 | **백엔드 전용** | [backend/README.md](backend/README.md) · [backend/SETUP_GUIDE.md](backend/SETUP_GUIDE.md) · [backend/DATABASE_SETUP.md](backend/DATABASE_SETUP.md) · [backend/CHECK_OAUTH_CONFIG.md](backend/CHECK_OAUTH_CONFIG.md) · [backend/RUN.md](backend/RUN.md) |
 

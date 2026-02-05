@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 /**
  * 파일 API 응답 DTO
- * @see 03_API_SPECIFICATION.md - 파일 API 응답 형식
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 파일 API 응답 형식
  */
 @Data
 @Builder

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 /**
  * 파일 메타데이터 Repository
- * @see 04_DATABASE_DESIGN.md - file_metadata 테이블
+ * @see docs/30_db/30_DATABASE_DESIGN.md - file_metadata 테이블
  */
 public interface FileMetadataRepository extends JpaRepository<FileMetadata, Long> {
 

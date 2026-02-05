@@ -2,8 +2,8 @@
  * 복호화 다이얼로그 컴포넌트
  * 암호화된 파일 읽기 시 비밀번호 입력
  * 
- * @see 02_REQUIREMENTS.md - FR-4.1 (파일 암호화)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-4.1 (파일 암호화)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/ui 레이어)
  */
 
 import './EncryptionDialog.css'; // 같은 스타일 사용

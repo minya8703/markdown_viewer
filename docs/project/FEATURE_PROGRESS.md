@@ -1,6 +1,6 @@
 # 기능별 진행 현황
 
-[02_REQUIREMENTS.md](../design/02_REQUIREMENTS.md), [05_UI_UX_DESIGN.md](../design/05_UI_UX_DESIGN.md) 기준으로 기능별 구현 진행도를 정리한 문서입니다.
+[11_REQUIREMENTS.md](../10_design/11_REQUIREMENTS.md), [40_UI_UX_DESIGN.md](../40_frontend/40_UI_UX_DESIGN.md) 기준으로 기능별 구현 진행도를 정리한 문서입니다.
 
 ---
 
@@ -89,7 +89,7 @@
 | 파일 변경 감지 API | ✅ 완료 | GET /api/files/{path}/check, 200/304, visibility.ts 연동 |
 | CI·자동화 | ✅ 완료 | GitHub Actions, scripts/check.ps1, run-dev, Jenkinsfile |
 | 테스트 | ✅ 확장 | 프론트: auth, theme, router, client, **fileService**. 백엔드: Auth, Health, **FileService**, **FileController**, AuthService |
-| 모니터링 | 📄 문서 | 09_SPRING_MONITORING.md, 15_JENKINS_AND_MONITORING.md (Actuator·Prometheus·Grafana) |
+| 모니터링 | 📄 문서 | 61_SPRING_MONITORING.md, 03_JENKINS_AND_MONITORING.md (Actuator·Prometheus·Grafana) |
 
 ---
 
@@ -105,6 +105,6 @@
 
 ## 문서 정보
 
-- **기준 문서**: [02_REQUIREMENTS.md](../design/02_REQUIREMENTS.md), [05_UI_UX_DESIGN.md](../design/05_UI_UX_DESIGN.md)
+- **기준 문서**: [11_REQUIREMENTS.md](../10_design/11_REQUIREMENTS.md), [40_UI_UX_DESIGN.md](../40_frontend/40_UI_UX_DESIGN.md)
 - **작성일**: 2026-02-02
 - **비고**: 구현 여부는 코드 검색 및 설계 문서 대조 기준이며, 실제 동작은 로컬/배포 환경에서 확인 필요.

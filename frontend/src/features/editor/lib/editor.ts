@@ -2,8 +2,8 @@
  * 에디터 기능
  * Smart Paste 및 변경사항 감지 유틸리티
  * 
- * @see 02_REQUIREMENTS.md - FR-3.2 (Smart Paste)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-3.2 (Smart Paste)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
  */
 
 import { detectMarkdown } from '@features/markdown-renderer';

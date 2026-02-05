@@ -2,10 +2,10 @@
  * Login 페이지
  * Google OAuth 로그인 페이지
  * 
- * @see 02_REQUIREMENTS.md - FR-1 (인증 기능 요구사항)
- * @see 03_API_SPECIFICATION.md - 인증 API 엔드포인트 상세 명세
- * @see 05_UI_UX_DESIGN.md - 로그인 흐름, 로그인 페이지 UI 설계
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (pages 레이어), TypeScript 코딩 규약
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-1 (인증 기능 요구사항)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 인증 API 엔드포인트 상세 명세
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 로그인 흐름, 로그인 페이지 UI 설계
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (pages 레이어), TypeScript 코딩 규약
  */
 
 import { Button } from '@shared/ui/Button';
@@ -35,7 +35,7 @@ export class LoginPage {
       // 로고/타이틀
       const title = document.createElement('h1');
       title.className = 'login-page__title';
-      title.textContent = 'Markdown Viewer V2';
+      title.textContent = 'Markdown Viewer';
       container.appendChild(title);
 
       const subtitle = document.createElement('p');

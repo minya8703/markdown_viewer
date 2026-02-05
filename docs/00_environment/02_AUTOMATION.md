@@ -42,7 +42,7 @@
 3. "Pipeline script from SCM" → Script Path: `Jenkinsfile`
 4. 빌드 시 자동으로 체크아웃 후 위 단계 실행
 
-**참고**: 상세 Jenkins 설정·테스트 확인·모니터링은 **15_JENKINS_AND_MONITORING.md** 참고.
+**참고**: 상세 Jenkins 설정·테스트 확인·모니터링은 **03_JENKINS_AND_MONITORING.md** 참고.
 
 ---
 
@@ -145,7 +145,7 @@ CI에서는 위와 동일한 방식으로 빌드하며, Jenkins는 성공 시 �
 
 1. **Spring Boot Actuator**  
    - 헬스·메트릭 엔드포인트 노출  
-   - 설정: **09_SPRING_MONITORING.md**, **15_JENKINS_AND_MONITORING.md** 참고
+   - 설정: **61_SPRING_MONITORING.md**, **03_JENKINS_AND_MONITORING.md** 참고
 
 2. **Prometheus**  
    - Actuator 메트릭 수집·저장  
@@ -158,7 +158,7 @@ CI에서는 위와 동일한 방식으로 빌드하며, Jenkins는 성공 시 �
 4. **알림**  
    - Grafana Alert 또는 Prometheus Alertmanager로 슬랙·이메일 등 연동
 
-자세한 설정·엔드포인트는 [09_SPRING_MONITORING.md](09_SPRING_MONITORING.md), [06_DEPLOYMENT_GUIDE.md](../deployment/06_DEPLOYMENT_GUIDE.md), [15_JENKINS_AND_MONITORING.md](15_JENKINS_AND_MONITORING.md)를 참고하세요.
+자세한 설정·엔드포인트는 [61_SPRING_MONITORING.md](../60_infra/61_SPRING_MONITORING.md), [50_DEPLOYMENT_GUIDE.md](../50_deployment/50_DEPLOYMENT_GUIDE.md), [03_JENKINS_AND_MONITORING.md](03_JENKINS_AND_MONITORING.md)를 참고하세요.
 
 ---
 
@@ -174,6 +174,6 @@ CI에서는 위와 동일한 방식으로 빌드하며, Jenkins는 성공 시 �
 
 ## 8. 관련 문서
 
-- **15_JENKINS_AND_MONITORING.md** — Jenkins 설정 시점, 테스트 확인, 모니터링 요약
-- [06_DEPLOYMENT_GUIDE.md](../deployment/06_DEPLOYMENT_GUIDE.md) — 배포 절차·운영
-- **09_SPRING_MONITORING.md** — Spring Boot 모니터링 상세
+- **03_JENKINS_AND_MONITORING.md** — Jenkins 설정 시점, 테스트 확인, 모니터링 요약
+- [50_DEPLOYMENT_GUIDE.md](../50_deployment/50_DEPLOYMENT_GUIDE.md) — 배포 절차·운영
+- **[61_SPRING_MONITORING.md](../60_infra/61_SPRING_MONITORING.md)** — Spring Boot 모니터링 상세

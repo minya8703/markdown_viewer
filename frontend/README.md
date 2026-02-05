@@ -158,6 +158,10 @@ VITE_ADSENSE_CLIENT_ID=ca-pub-6630536104334142
 - Safari (최신 2개 버전)
 - 모바일 브라우저 지원
 
+## 문서
+
+- 설계·배포·코딩 규약 등: [../docs/README.md](../docs/README.md)
+
 ## 라이선스
 
 MIT

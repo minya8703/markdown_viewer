@@ -71,5 +71,5 @@ nbdist/
 .nb-gradle/
 
 # ---- 로컬 전용 문서 (배포·운영 참고용, 저장소에는 미포함) ----
-docs/deployment/DEPLOYMENT_PLAN.md
-docs/deployment/SSL_HTTPS_SETUP.md
+docs/50_deployment/DEPLOYMENT_PLAN.md
+docs/50_deployment/SSL_HTTPS_SETUP.md

@@ -2,8 +2,8 @@
  * Page Visibility API 관리
  * 백그라운드 업데이트 방지, 탭 복귀 시 파일 변경 감지 및 알림
  *
- * @see 02_REQUIREMENTS.md - FR-5.3 (백그라운드 업데이트 방지)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/lib 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-5.3 (백그라운드 업데이트 방지)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/lib 레이어)
  */
 
 import { TokenManager } from '@shared/api/client';

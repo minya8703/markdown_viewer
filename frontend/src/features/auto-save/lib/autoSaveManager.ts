@@ -2,8 +2,8 @@
  * 자동 저장 관리자
  * localStorage 즉시 저장 + 서버 주기적 저장
  * 
- * @see 02_REQUIREMENTS.md - FR-5.2 (자동 저장 기능 요구사항)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어), 비즈니스 로직 분리
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-5.2 (자동 저장 기능 요구사항)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어), 비즈니스 로직 분리
  */
 
 import { saveFile } from '@features/file-management';

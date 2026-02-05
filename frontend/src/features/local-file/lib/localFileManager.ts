@@ -2,9 +2,9 @@
  * 로컬 파일 관리자
  * File System Access API를 사용한 로컬 파일 읽기/저장
  * 
- * @see 02_REQUIREMENTS.md - FR-4.2 (로컬 전용 모드)
- * @see 01_SYSTEM_ARCHITECTURE.md - 로컬 파일 읽기/저장 상세
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-4.2 (로컬 전용 모드)
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - 로컬 파일 읽기/저장 상세
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
  */
 
 export interface LocalFileInfo {

@@ -6,9 +6,9 @@
  * → Brand safety → Blocking controls → Manage Sensitive categories / Ad review center
  * @see docs/project/ADSENSE_SAFETY.md
  *
- * @see 02_REQUIREMENTS.md - FR-6.1 (Google AdSense 통합)
- * @see 05_UI_UX_DESIGN.md - Footer 컴포넌트 설계
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-6.1 (Google AdSense 통합)
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - Footer 컴포넌트 설계
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (widgets 레이어)
  */
 
 import './Footer.css';

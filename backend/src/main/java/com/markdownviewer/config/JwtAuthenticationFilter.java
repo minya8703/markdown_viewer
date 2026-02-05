@@ -1,6 +1,7 @@
 package com.markdownviewer.config;
 
 import com.markdownviewer.service.AuthService;
+import com.markdownviewer.service.JwtBlacklistService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,13 +27,14 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = extractToken(request);
-            if (StringUtils.hasText(token)) {
+            if (StringUtils.hasText(token) && !jwtBlacklistService.contains(token)) {
                 Long userId = authService.getUserIdFromToken(token);
                 JwtPrincipal principal = new JwtPrincipal(userId);
                 UsernamePasswordAuthenticationToken authentication =

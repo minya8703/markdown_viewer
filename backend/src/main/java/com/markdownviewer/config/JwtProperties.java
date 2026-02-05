@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 /**
  * JWT 설정 Properties
  * 
- * @see 01_SYSTEM_ARCHITECTURE.md - JWT 토큰 설정
- * @see 12_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (Configuration)
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - JWT 토큰 설정
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - 백엔드 코딩 규약 (Configuration)
  */
 @Configuration
 @ConfigurationProperties(prefix = "jwt")

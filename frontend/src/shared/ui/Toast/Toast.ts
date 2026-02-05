@@ -2,8 +2,8 @@
  * Toast 알림 컴포넌트
  * 사용자에게 알림 메시지를 표시하는 컴포넌트
  * 
- * @see 05_UI_UX_DESIGN.md - UI 피드백 (알림)
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/ui 레이어)
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - UI 피드백 (알림)
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (shared/ui 레이어)
  */
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';

@@ -5,6 +5,7 @@ import com.markdownviewer.entity.FileMetadata;
 import com.markdownviewer.entity.User;
 import com.markdownviewer.service.AuthService;
 import com.markdownviewer.service.FileService;
+import com.markdownviewer.service.JwtBlacklistService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,6 +54,9 @@ class FileControllerTest {
 
     @MockBean
     private AuthService authService;
+
+    @MockBean
+    private JwtBlacklistService jwtBlacklistService;
 
     private User user;
 

@@ -2,9 +2,9 @@
  * 에디터 컴포넌트
  * 전체 화면 마크다운 에디터
  * 
- * @see 02_REQUIREMENTS.md - FR-3.1 (편집 모드), FR-3.2 (Smart Paste), FR-3.3 (편집 종료)
- * @see 05_UI_UX_DESIGN.md - 편집 모드 UI 설계, 키보드 단축키
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features 레이어), TypeScript 코딩 규약
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-3.1 (편집 모드), FR-3.2 (Smart Paste), FR-3.3 (편집 종료)
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 편집 모드 UI 설계, 키보드 단축키
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features 레이어), TypeScript 코딩 규약
  */
 
 import { handleSmartPaste, hasUnsavedChanges } from '../lib/editor';

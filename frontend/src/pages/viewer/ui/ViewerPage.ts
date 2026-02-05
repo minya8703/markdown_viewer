@@ -2,10 +2,10 @@
  * Viewer 페이지
  * 메인 마크다운 뷰어 페이지
  * 
- * @see 02_REQUIREMENTS.md - FR-2 (파일 관리), FR-3 (마크다운 편집), FR-5 (사용자 경험)
- * @see 03_API_SPECIFICATION.md - 파일 관리 API, 마크다운 처리 API
- * @see 05_UI_UX_DESIGN.md - 뷰어 화면 레이아웃, 편집 모드 UI, 사용자 흐름
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처, TypeScript 코딩 규약
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-2 (파일 관리), FR-3 (마크다운 편집), FR-5 (사용자 경험)
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 파일 관리 API, 마크다운 처리 API
+ * @see docs/40_frontend/40_UI_UX_DESIGN.md - 뷰어 화면 레이아웃, 편집 모드 UI, 사용자 흐름
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처, TypeScript 코딩 규약
  */
 
 import { Header } from '@widgets/header';

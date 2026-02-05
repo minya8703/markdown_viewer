@@ -4,7 +4,7 @@
 - **프로젝트**: 마크다운 뷰어 V2
 - **버전**: 1.0
 - **작성일**: 2026-01-29
-- **기반 문서**: [01_SYSTEM_ARCHITECTURE.md](../design/01_SYSTEM_ARCHITECTURE.md)
+- **기반 문서**: [10_SYSTEM_ARCHITECTURE.md](../10_design/10_SYSTEM_ARCHITECTURE.md)
 
 ## 목차
 1. [개요](#개요)
@@ -40,10 +40,12 @@
 
 ## NAS 배포
 
+이 섹션은 **Synology NAS**(예: DS725+, DS720+, DS723+ 등) 또는 Docker를 지원하는 다른 NAS에서 배포할 때 참고합니다. Synology는 **Container Manager**(구 Docker) 패키지로 Docker Compose를 사용할 수 있습니다.
+
 ### 1. 사전 준비
 
 #### 필요한 소프트웨어
-- Docker & Docker Compose
+- Docker & Docker Compose (Synology: 패키지 센터에서 **Container Manager** 설치)
 - Nginx
 - Git
 
@@ -106,6 +108,8 @@ FILE_STORAGE_PATH=/data/users
 ADSENSE_PUBLISHER_ID=your_publisher_id
 ADSENSE_AD_UNIT_ID=your_ad_unit_id
 ```
+
+**Redis (선택):** 파일 업로드/저장에는 Redis를 사용하지 않습니다. Redis는 JWT 로그아웃 블랙리스트·파일 메타데이터 캐시용이며, 단일 인스턴스면 생략 가능합니다. 사용 시 필요한 설정은 [01_REDIS_GUIDE.md](../00_environment/01_REDIS_GUIDE.md) 참고.
 
 ### 3. Docker Compose 설정
 
@@ -778,7 +782,7 @@ logging:
 - 에러율 5% 초과
 - 응답 시간 p95가 2초 초과
 
-**자세한 내용은 [Spring 모니터링 가이드](../infra-dev/09_SPRING_MONITORING.md) 참고**
+**자세한 내용은 [Spring 모니터링 가이드](../60_infra/61_SPRING_MONITORING.md) 참고**
 
 ---
 

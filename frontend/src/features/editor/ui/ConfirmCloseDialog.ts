@@ -1,6 +1,6 @@
 /**
  * 편집 종료 시 변경사항 확인 다이얼로그
- * 설계: 저장 후 닫기 / 저장하지 않고 닫기 / 취소 (05_UI_UX_DESIGN)
+ * 설계: 저장 후 닫기 / 저장하지 않고 닫기 / 취소 (docs/40_frontend/40_UI_UX_DESIGN.md)
  */
 
 import './ConfirmCloseDialog.css';

@@ -2,9 +2,9 @@
  * 파일 암호화 유틸리티
  * Web Crypto API를 사용한 클라이언트 사이드 암호화
  * 
- * @see 02_REQUIREMENTS.md - FR-4.1 (파일 암호화)
- * @see 01_SYSTEM_ARCHITECTURE.md - 암호화 구현 상세
- * @see 12_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
+ * @see docs/10_design/11_REQUIREMENTS.md - FR-4.1 (파일 암호화)
+ * @see docs/10_design/10_SYSTEM_ARCHITECTURE.md - 암호화 구현 상세
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - FSD 아키텍처 (features/lib 레이어)
  */
 
 export interface EncryptedData {

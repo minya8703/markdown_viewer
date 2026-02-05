@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 /**
  * 파일 API 컨트롤러
- * @see 03_API_SPECIFICATION.md - 파일 API
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 파일 API
  */
 @RestController
 @RequestMapping("/files")

@@ -2,9 +2,9 @@
  * 공유 타입 정의
  * 애플리케이션 전역에서 사용되는 TypeScript 타입 및 인터페이스
  * 
- * @see 03_API_SPECIFICATION.md - API 응답 구조, 데이터 모델
- * @see 04_DATABASE_DESIGN.md - 데이터베이스 엔티티 구조
- * @see 12_CODING_CONVENTIONS.md - TypeScript 타입 정의 규약
+ * @see docs/20_backend/20_API_SPECIFICATION.md - API 응답 구조, 데이터 모델
+ * @see docs/30_db/30_DATABASE_DESIGN.md - 데이터베이스 엔티티 구조
+ * @see docs/40_frontend/41_CODING_CONVENTIONS.md - TypeScript 타입 정의 규약
  */
 
 // API 응답 기본 구조

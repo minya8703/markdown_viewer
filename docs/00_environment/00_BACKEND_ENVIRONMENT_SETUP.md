@@ -4,7 +4,7 @@
 - **프로젝트**: 마크다운 뷰어 V2
 - **버전**: 1.0
 - **작성일**: 2026-02-02
-- **기반 문서**: [01_SYSTEM_ARCHITECTURE.md](../design/01_SYSTEM_ARCHITECTURE.md), [03_API_SPECIFICATION.md](../design/03_API_SPECIFICATION.md)
+- **기반 문서**: [10_SYSTEM_ARCHITECTURE.md](../10_design/10_SYSTEM_ARCHITECTURE.md), [20_API_SPECIFICATION.md](../20_backend/20_API_SPECIFICATION.md)
 
 ## 목차
 1. [개요](#개요)

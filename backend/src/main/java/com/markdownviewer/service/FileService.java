@@ -7,6 +7,8 @@ import com.markdownviewer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,8 +27,8 @@ import java.util.stream.Collectors;
 /**
  * 파일 저장/조회 서비스
  * 사용자별 디렉토리(/users/{userId}/files/)에 파일 저장, 메타데이터는 DB 관리
- * @see 03_API_SPECIFICATION.md - 파일 API
- * @see 04_DATABASE_DESIGN.md - file_metadata
+ * @see docs/20_backend/20_API_SPECIFICATION.md - 파일 API
+ * @see docs/30_db/30_DATABASE_DESIGN.md - file_metadata
  */
 @Service
 @RequiredArgsConstructor
@@ -76,6 +78,7 @@ public class FileService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "fileMetadata", key = "#user.id + ':' + #filePath")
     public Optional<FileMetadata> getMetadata(User user, String filePath) {
         String path = sanitizePath(filePath);
         return fileMetadataRepository.findByUserAndFilePath(user, path);
@@ -122,6 +125,7 @@ public class FileService {
     }
 
     @Transactional
+    @CacheEvict(value = "fileMetadata", key = "#user.id + ':' + #filePath")
     public Optional<FileMetadata> saveFile(User user, String filePath, String content,
                                            boolean encrypted, String encryptedDataB64, String ivB64, String tagB64) {
         String path = sanitizePath(filePath);
@@ -238,6 +242,7 @@ public class FileService {
     }
 
     @Transactional
+    @CacheEvict(value = "fileMetadata", key = "#user.id + ':' + #filePath")
     public boolean deleteFile(User user, String filePath, boolean secure) {
         String path = sanitizePath(filePath);
         Optional<FileMetadata> metaOpt = fileMetadataRepository.findByUserAndFilePath(user, path);
